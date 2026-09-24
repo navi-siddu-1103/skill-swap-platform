@@ -234,8 +234,29 @@ const SkillSearch = () => {
                 {u.username}{' '}
                 {u.email && <span style={emailStyle}>({u.email})</span>}
               </span>
+              {/* Chat button */}
               <button
-                style={swapButtonStyle}
+                style={{
+                  ...swapButtonStyle,
+                  background: '#eef2ff',
+                  color: '#4338ca',
+                  marginLeft: 8,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 5,
+                }}
+                onClick={() =>
+                  window.dispatchEvent(
+                    new CustomEvent('open-chat', { detail: { id: u.id, username: u.username } })
+                  )
+                }
+                title={`Chat with ${u.username}`}
+              >
+                💬 Chat
+              </button>
+              {/* Swap button */}
+              <button
+                style={{ ...swapButtonStyle, marginLeft: 8 }}
                 onClick={() => openSwap(u)}
               >
                 Send Swap Request

@@ -1,21 +1,35 @@
-# Ignore build and output folders for backend
+# ── Backend ──────────────────────────────────────────────────────────────────
 /skill-swap-backend/target/
 /skill-swap-backend/*.jar
 /skill-swap-backend/*.war
 
-# Ignore node modules and build folders for frontend
+# JVM crash / replay logs (auto-generated, not needed in repo)
+*.log
+hs_err_pid*.log
+replay_pid*.log
+
+# ── Frontend ──────────────────────────────────────────────────────────────────
 /skill-swap-frontend/node_modules/
 /skill-swap-frontend/build/
 /skill-swap-frontend/dist/
 
-# IDE and editor config files
+# ── IDE & Editor ──────────────────────────────────────────────────────────────
 .idea/
 .vscode/
 *.iml
+.classpath
+.project
+.settings/
 
-# OS generated files
+# ── OS generated ──────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 
-# Environment files (do not commit secrets)
+# ── Secrets / Environment ─────────────────────────────────────────────────────
 *.env
+
+# ── Eclipse metadata ──────────────────────────────────────────────────────────
+/.metadata/
+
+# ── Screenshots (no need in code repo) ────────────────────────────────────────
+Screenshot*.png

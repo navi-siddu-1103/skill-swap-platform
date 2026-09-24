@@ -37,7 +37,7 @@ const Register = () => {
       setSuccess(true);
       setTimeout(() => navigate('/login'), 1800);
     } catch (err) {
-      setError(err.response?.data || 'Registration failed. Try another username/email.');
+      setError(err.response?.data?.message || err.response?.data || 'Registration failed. Try another username/email.');
     }
   };
 
