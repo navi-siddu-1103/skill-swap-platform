@@ -1,5 +1,6 @@
 # ── Backend ──────────────────────────────────────────────────────────────────
 /skill-swap-backend/target/
+/skill-swap-backend/bin/
 /skill-swap-backend/*.jar
 /skill-swap-backend/*.war
 
