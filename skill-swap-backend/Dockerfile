@@ -20,11 +20,15 @@ RUN ./mvnw clean package -DskipTests
 FROM eclipse-temurin:25-jre
 WORKDIR /app
 
+# Create directory for embedded data if H2 fallback is used
+RUN mkdir -p /app/data
+
 # Copy the compiled executable JAR
 COPY --from=build /app/target/*.jar app.jar
 
-# Render assigns dynamic port via $PORT
-EXPOSE 9091
+# Set prod profile by default for container deployments
+ENV SPRING_PROFILES_ACTIVE=prod
 ENV PORT=9091
+EXPOSE 9091
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
