@@ -32,10 +32,12 @@ const SkillSearch = () => {
     setSearching(true);
     try {
       const res = await api.get('/search', { params: search });
-      setResults(res.data.filter(u => u.id !== user.userId));
+      const filtered = (res.data || []).filter(u => Number(u.id) !== Number(user.userId));
+      setResults(filtered);
       setError('');
-    } catch {
-      setError('No users found');
+    } catch (err) {
+      console.error('Search error:', err);
+      setError(err?.response?.data?.message || 'Search failed. Please try again.');
       setResults([]);
     } finally {
       setSearching(false);
