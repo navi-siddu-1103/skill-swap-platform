@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: skill-swap-backend
+    runtime: docker
+    dockerfilePath: skill-swap-backend/Dockerfile
+    dockerContext: skill-swap-backend
+    plan: free
+    region: oregon
+    envVars:
+      - key: PORT
+        value: 9091
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: FRONTEND_URL
+        sync: false

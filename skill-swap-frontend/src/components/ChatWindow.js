@@ -27,8 +27,9 @@ const ChatWindow = ({ partner, onClose, onUnreadChange }) => {
     api.post(`/chat/read/${partner.id}/${user.userId}`).catch(() => {});
 
     // 3. Connect STOMP over SockJS
+    const wsUrl = process.env.REACT_APP_WS_URL || 'http://localhost:9091/ws';
     const client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:9091/ws'),
+      webSocketFactory: () => new SockJS(wsUrl),
       connectHeaders: { userId: String(user.userId) },
       reconnectDelay: 5000,
       onConnect: () => {
