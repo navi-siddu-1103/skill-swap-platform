@@ -21,29 +21,54 @@ public class AuthController {
     private BCryptPasswordEncoder passwordEncoder; // Inject encoder bean
 
     @PostMapping("/register")
-    public User register(@RequestBody Map<String, String> body) {
-        return userService.registerUser(
-                body.get("username"),
-                body.get("password"),
-                "USER", // fixed: directly using string "USER"
-                body.get("email"));
+    public ResponseEntity<?> register(@RequestBody Map<String, String> body) {
+        try {
+            User user = userService.registerUser(
+                    body.get("username"),
+                    body.get("password"),
+                    "USER",
+                    body.get("email"));
+            return ResponseEntity.ok(Map.of(
+                    "userId", user.getId(),
+                    "username", user.getUsername(),
+                    "email", user.getEmail() != null ? user.getEmail() : "",
+                    "role", user.getRole()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage() != null ? e.getMessage() : "Registration failed"));
+        }
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
-        String username = body.get("username");
+        String identifier = body.get("username");
         String password = body.get("password");
 
-        Optional<User> userOpt = userService.findByUsername(username);
-        if (userOpt.isPresent() && passwordEncoder.matches(password, userOpt.get().getPassword())) {
-            // In production, return JWT or session token here.
-            return ResponseEntity.ok(
-                    Map.of(
-                            "userId", userOpt.get().getId(),
-                            "username", username,
-                            "role", userOpt.get().getRole()));
-        } else {
-            return ResponseEntity.status(401).body("Invalid credentials");
+        if (identifier == null || identifier.isBlank() || password == null || password.isBlank()) {
+            return ResponseEntity.status(401).body(Map.of("message", "Please enter both username/email and password"));
         }
+
+        identifier = identifier.trim();
+
+        // Support login by either username or email (case-insensitive)
+        Optional<User> userOpt = userService.findByUsernameOrEmail(identifier);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            // Check password match, with trim fallback in case of accidental space on mobile keyboard
+            boolean matches = passwordEncoder.matches(password, user.getPassword());
+            if (!matches && !password.equals(password.trim())) {
+                matches = passwordEncoder.matches(password.trim(), user.getPassword());
+            }
+
+            if (matches) {
+                return ResponseEntity.ok(
+                        Map.of(
+                                "userId", user.getId(),
+                                "username", user.getUsername(),
+                                "email", user.getEmail() != null ? user.getEmail() : "",
+                                "role", user.getRole() != null ? user.getRole() : "USER"));
+            }
+        }
+
+        return ResponseEntity.status(401).body(Map.of("message", "Invalid username or password"));
     }
 }

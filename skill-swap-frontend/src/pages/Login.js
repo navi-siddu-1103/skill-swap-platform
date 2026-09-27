@@ -8,6 +8,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ username: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -18,16 +19,30 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const cleanUsername = form.username.trim();
+    if (!cleanUsername || !form.password) {
+      setError('Please enter both username/email and password');
+      return;
+    }
+
     setLoading(true);
+    setError('');
     try {
-      const response = await api.post('/auth/login', form);
+      const response = await api.post('/auth/login', {
+        username: cleanUsername,
+        password: form.password,
+      });
       login(response.data);
       navigate('/dashboard');
     } catch (err) {
-      if (err.response && err.response.status === 401) {
-        setError('Invalid username or password');
+      console.error('Login error:', err);
+      const msg = err?.response?.data?.message || err?.response?.data;
+      if (typeof msg === 'string') {
+        setError(msg);
+      } else if (err?.response?.status === 401) {
+        setError('Invalid username/email or password');
       } else {
-        setError('Login failed. Please try again.');
+        setError('Login failed. Please check your connection and try again.');
       }
     } finally {
       setLoading(false);
@@ -114,7 +129,7 @@ const Login = () => {
             Welcome Back
           </h2>
           <p style={{ margin: 0, fontSize: '0.9rem', color: '#94a3b8' }}>
-            Sign in to continue swapping skills
+            Sign in with your username or email
           </p>
         </div>
 
@@ -122,12 +137,12 @@ const Login = () => {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div>
             <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 6 }}>
-              Username
+              Username or Email
             </label>
             <input
               type="text"
               name="username"
-              placeholder="Enter your username"
+              placeholder="Enter your username or email"
               value={form.username}
               onChange={handleChange}
               required
@@ -148,23 +163,62 @@ const Login = () => {
             <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 6 }}>
               Password
             </label>
-            <input
-              type="password"
-              name="password"
-              placeholder="••••••••"
-              value={form.password}
-              onChange={handleChange}
-              required
-              style={inputStyle}
-              onFocus={e => {
-                e.target.style.borderColor = '#818cf8';
-                e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.35)';
-              }}
-              onBlur={e => {
-                e.target.style.borderColor = 'rgba(255, 255, 255, 0.16)';
-                e.target.style.boxShadow = 'none';
-              }}
-            />
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                placeholder="••••••••"
+                value={form.password}
+                onChange={handleChange}
+                required
+                style={{
+                  ...inputStyle,
+                  paddingRight: 48,
+                }}
+                onFocus={e => {
+                  e.target.style.borderColor = '#818cf8';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.35)';
+                }}
+                onBlur={e => {
+                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.16)';
+                  e.target.style.boxShadow = 'none';
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(prev => !prev)}
+                style={{
+                  position: 'absolute',
+                  right: 12,
+                  background: 'none',
+                  border: 'none',
+                  color: showPassword ? '#a5b4fc' : '#94a3b8',
+                  cursor: 'pointer',
+                  padding: 8,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'color 0.2s',
+                  outline: 'none',
+                }}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                title={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? (
+                  /* Eye Off Icon */
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                  </svg>
+                ) : (
+                  /* Eye Open Icon */
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
 
           {error && (

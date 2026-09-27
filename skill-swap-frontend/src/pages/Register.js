@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 const Register = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: '', email: '', password: '', confirmPassword: '' });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -16,15 +18,40 @@ const Register = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    if (form.password !== form.confirmPassword) { setError('Passwords do not match'); return; }
-    if (form.password.length < 6) { setError('Password must be at least 6 characters'); return; }
+    const cleanUser = form.username.trim();
+    const cleanEmail = form.email.trim();
+
+    if (!cleanUser) {
+      setError('Username cannot be empty');
+      return;
+    }
+    if (!cleanEmail) {
+      setError('Email cannot be empty');
+      return;
+    }
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    if (form.password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
     setLoading(true);
+    setError('');
     try {
-      await api.post('/auth/register', { username: form.username, password: form.password, email: form.email });
+      await api.post('/auth/register', {
+        username: cleanUser,
+        password: form.password,
+        email: cleanEmail,
+      });
       setSuccess(true);
       setTimeout(() => navigate('/login'), 1500);
     } catch (err) {
-      setError(err.response?.data?.message || err.response?.data || 'Registration failed. Try another username/email.');
+      console.error('Registration error:', err);
+      const msg = err?.response?.data?.message || err?.response?.data;
+      setError(typeof msg === 'string' ? msg : 'Registration failed. Try another username or email.');
     } finally {
       setLoading(false);
     }
@@ -133,38 +160,141 @@ const Register = () => {
             <div style={{ fontSize: '0.85rem', opacity: 0.9 }}>Redirecting you to login…</div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 5 }}>
                 Username
               </label>
-              <input type="text" name="username" placeholder="Choose a username"
-                value={form.username} onChange={handleChange}
-                onFocus={handleFocus} onBlur={handleBlur} required style={inputStyle} />
+              <input
+                type="text"
+                name="username"
+                placeholder="Choose a username"
+                value={form.username}
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                required
+                style={inputStyle}
+              />
             </div>
+
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 5 }}>
                 Email
               </label>
-              <input type="email" name="email" placeholder="your.email@example.com"
-                value={form.email} onChange={handleChange}
-                onFocus={handleFocus} onBlur={handleBlur} required style={inputStyle} />
+              <input
+                type="email"
+                name="email"
+                placeholder="your.email@example.com"
+                value={form.email}
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                required
+                style={inputStyle}
+              />
             </div>
+
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 5 }}>
                 Password (min 6 characters)
               </label>
-              <input type="password" name="password" placeholder="••••••••"
-                value={form.password} onChange={handleChange}
-                onFocus={handleFocus} onBlur={handleBlur} required style={inputStyle} />
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  placeholder="••••••••"
+                  value={form.password}
+                  onChange={handleChange}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  required
+                  style={{ ...inputStyle, paddingRight: 48 }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(prev => !prev)}
+                  style={{
+                    position: 'absolute',
+                    right: 12,
+                    background: 'none',
+                    border: 'none',
+                    color: showPassword ? '#a5b4fc' : '#94a3b8',
+                    cursor: 'pointer',
+                    padding: 8,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'color 0.2s',
+                    outline: 'none',
+                  }}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  title={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
+
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 5 }}>
                 Confirm Password
               </label>
-              <input type="password" name="confirmPassword" placeholder="••••••••"
-                value={form.confirmPassword} onChange={handleChange}
-                onFocus={handleFocus} onBlur={handleBlur} required style={inputStyle} />
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  name="confirmPassword"
+                  placeholder="••••••••"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  required
+                  style={{ ...inputStyle, paddingRight: 48 }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(prev => !prev)}
+                  style={{
+                    position: 'absolute',
+                    right: 12,
+                    background: 'none',
+                    border: 'none',
+                    color: showConfirmPassword ? '#a5b4fc' : '#94a3b8',
+                    cursor: 'pointer',
+                    padding: 8,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'color 0.2s',
+                    outline: 'none',
+                  }}
+                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  title={showConfirmPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showConfirmPassword ? (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
 
             {error && (
