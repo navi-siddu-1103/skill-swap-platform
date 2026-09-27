@@ -6,7 +6,7 @@ const initialRequest = {
   skillToGive: '',
   skillToGet: '',
   dateTime: '',
-  phoneNumber: ''
+  phoneNumber: '',
 };
 
 const SkillSearch = () => {
@@ -14,25 +14,28 @@ const SkillSearch = () => {
   const [search, setSearch] = useState({ skill: '', type: 'teach' });
   const [results, setResults] = useState([]);
   const [error, setError] = useState('');
+  const [searching, setSearching] = useState(false);
+
+  // Swap Request Modal state
   const [swapModal, setSwapModal] = useState(null);
   const [form, setForm] = useState(initialRequest);
   const [success, setSuccess] = useState('');
-  const [searching, setSearching] = useState(false);
 
-  const handleChange = (e) => setSearch({ ...search, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setSearch({ ...search, [e.target.name]: e.target.value });
 
   const handleSearch = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
     if (!search.skill.trim()) {
-      setError('Please enter a skill.');
+      setError('Please enter a skill to search.');
       return;
     }
     setSearching(true);
     try {
       const res = await api.get('/search', { params: search });
-      const filtered = (res.data || []).filter(u => Number(u.id) !== Number(user.userId));
+      const filtered = (res.data || []).filter(u => Number(u.id) !== Number(user?.userId));
       setResults(filtered);
       setError('');
     } catch (err) {
@@ -62,287 +65,392 @@ const SkillSearch = () => {
       !form.dateTime ||
       !form.phoneNumber
     ) {
-      setError('All fields required');
+      setError('All fields are required.');
       return;
     }
-    // Basic phone validation (10+ digits, adjust as needed)
-    if (!/^[\d+ \-()]{7,}$/.test(form.phoneNumber.trim())) {
-      setError('Enter a valid phone number');
-      return;
-    }
+
     try {
       await api.post('/swaps/request', {
         senderId: user.userId,
         recipientId: swapModal.id,
-        requestedSkill: form.skillToGive,
-        desiredSkill: form.skillToGet,
+        requestedSkill: form.skillToGet,
+        desiredSkill: form.skillToGive,
         proposedDateTime: form.dateTime,
-        phoneNumber: form.phoneNumber
+        phoneNumber: form.phoneNumber,
       });
-      setSuccess('Swap request sent!');
-      setTimeout(() => setSwapModal(null), 1500); // Hide modal after short delay
-    } catch {
-      setError('Failed to send request');
+      setSuccess('Swap request sent successfully!');
+      setSwapModal(null);
+      setForm(initialRequest);
+    } catch (err) {
+      console.error('Swap request error:', err);
+      setError('Failed to send swap request.');
     }
   };
 
-  // Styles
-  const containerStyle = {
-    maxWidth: 560,
-    margin: '40px auto',
-    background: '#fff',
-    borderRadius: 12,
-    padding: '32px 32px 28px 32px',
-    boxShadow: '0 6px 24px rgba(70,70,150,0.09)',
-  };
-
-  const headingStyle = {
-    fontWeight: 800,
-    fontSize: '2rem',
-    color: '#3730a3',
-    marginBottom: 24,
-    letterSpacing: '-1px',
-  };
-
-  const formStyle = {
-    display: 'flex',
-    gap: 12,
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    marginBottom: 28,
-  };
-
-  const inputStyle = {
-    border: '1px solid #b5b8ec',
-    borderRadius: 6,
-    padding: '10px 16px',
-    fontSize: '1.05rem',
-    minWidth: 140,
-    flex: 1,
-  };
-
-  const selectStyle = {
-    border: '1px solid #b5b8ec',
-    borderRadius: 6,
-    padding: '10px 12px',
-    fontSize: '1.06rem',
-  };
-
-  const buttonStyle = {
-    background: '#4338ca',
-    color: 'white',
-    padding: '11px 32px',
-    borderRadius: 7,
-    border: 'none',
-    fontWeight: 'bold',
-    fontSize: '1.05rem',
-    boxShadow: '0 2px 6px rgba(100,80,180,0.10)',
-    cursor: 'pointer',
-    transition: 'background .2s',
-  };
-
-  const listStyle = { paddingLeft: '4px', marginTop: 8 };
-
-  const listItemStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: 18,
-    padding: 0,
-    borderRadius: 8,
-  };
-
-  const dotStyle = {
-    fontSize: '1.38rem',
-    color: '#4338ca',
-    marginRight: 10,
-  };
-
-  const usernameStyle = {
-    flex: 1,
-    fontWeight: 500,
-    color: '#1f2937',
-    fontSize: '1.13rem',
-  };
-
-  const emailStyle = {
-    color: '#6366f1',
-    fontSize: '0.98rem',
-    fontWeight: 400,
-  };
-
-  const swapButtonStyle = {
-    marginLeft: 12,
-    padding: '7px 18px',
-    borderRadius: 7,
-    border: '1px solid #d8d8f2',
-    background: '#f1f5ff',
-    color: '#4e46e5',
-    fontWeight: 600,
-    fontSize: '1rem',
-    boxShadow: '0 1px 4px rgba(70,80,150,0.07)',
-    cursor: 'pointer',
-    transition: 'background .15s, color .13s',
-  };
-
-  const noUsersStyle = {
-    fontStyle: 'italic',
-    color: '#7e7e91',
-    marginTop: 12,
-  };
-
-  // Modal input style
-  const modalInputStyle = {
-    padding: '10px 12px',
-    fontSize: '1rem',
-    borderRadius: 6,
-    border: '1px solid #b5b8ec',
-    marginBottom: 0,
-    outline: 'none'
-  };
-
   return (
-    <div style={containerStyle}>
-      <h2 style={headingStyle}>Find Skill Swap Partners</h2>
+    <div style={{
+      minHeight: 'calc(100vh - 64px)',
+      padding: '40px 24px 60px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      position: 'relative',
+    }}>
+      {/* Background Glow */}
+      <div style={{
+        position: 'absolute', top: '15%', left: '20%',
+        width: 360, height: 360,
+        background: 'rgba(99, 102, 241, 0.2)',
+        borderRadius: '50%', filter: 'blur(100px)', pointerEvents: 'none',
+      }} />
 
-      <form onSubmit={handleSearch} style={formStyle}>
-        <input
-          name="skill"
-          value={search.skill}
-          onChange={handleChange}
-          placeholder="Skill (e.g. Python)"
-          style={inputStyle}
-        />
-        <select name="type" value={search.type} onChange={handleChange} style={selectStyle}>
-          <option value="teach">Can Teach</option>
-          <option value="learn">Want To Learn</option>
-        </select>
-        <button type="submit" style={buttonStyle} disabled={searching}>
-          {searching ? 'Searching…' : 'Search'}
-        </button>
-      </form>
+      {/* Main Glass Card */}
+      <div style={{
+        position: 'relative',
+        width: '100%',
+        maxWidth: 720,
+        padding: '36px 32px',
+        borderRadius: 24,
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.12)',
+        boxShadow: '0 25px 60px rgba(0, 0, 0, 0.45)',
+        color: '#f8fafc',
+      }}>
+        <h2 style={{
+          margin: '0 0 24px 0',
+          fontSize: '2rem',
+          fontWeight: 800,
+          letterSpacing: '-0.5px',
+          background: 'linear-gradient(135deg, #ffffff 40%, #c7d2fe 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          textAlign: 'center',
+        }}>
+          Find Skill Swap Partners
+        </h2>
 
-      {error && !swapModal && <p style={{ color: 'red', marginBottom: 16 }}>{error}</p>}
-
-      {results.length === 0 && !searching && !error && (
-        <div style={noUsersStyle}>No users found</div>
-      )}
-
-      {results.length > 0 && (
-        <ul style={listStyle}>
-          {results.map(u => (
-            <li key={u.id} style={listItemStyle}>
-              <span style={dotStyle}>•</span>
-              <span style={usernameStyle}>
-                {u.username}{' '}
-                {u.email && <span style={emailStyle}>({u.email})</span>}
-              </span>
-              {/* Chat button */}
-              <button
-                style={{
-                  ...swapButtonStyle,
-                  background: '#eef2ff',
-                  color: '#4338ca',
-                  marginLeft: 8,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 5,
-                }}
-                onClick={() =>
-                  window.dispatchEvent(
-                    new CustomEvent('open-chat', { detail: { id: u.id, username: u.username } })
-                  )
-                }
-                title={`Chat with ${u.username}`}
-              >
-                💬 Chat
-              </button>
-              {/* Swap button */}
-              <button
-                style={{ ...swapButtonStyle, marginLeft: 8 }}
-                onClick={() => openSwap(u)}
-              >
-                Send Swap Request
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {swapModal && (
-        <div
-          style={{
-            position: 'fixed',
-            left: 0,
-            top: 0,
-            right: 0,
-            bottom: 0,
-            background: '#0004',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000,
-          }}
-        >
-          <div
+        {/* Search Bar Form */}
+        <form onSubmit={handleSearch} style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 24 }}>
+          <input
+            name="skill"
+            value={search.skill}
+            onChange={handleChange}
+            placeholder="Search skill (e.g. Python, Java, React)"
             style={{
-              background: '#fff',
-              padding: 24,
-              borderRadius: 14,
-              width: '350px',
-              boxShadow: '0 4px 16px rgba(60,60,100,0.14)',
-              display: 'flex',
-              flexDirection: 'column',
+              flex: '1 1 220px',
+              padding: '12px 16px',
+              borderRadius: 12,
+              background: 'rgba(255, 255, 255, 0.07)',
+              border: '1px solid rgba(255, 255, 255, 0.16)',
+              color: '#ffffff',
+              fontSize: '0.95rem',
+              outline: 'none',
+            }}
+            onFocus={e => {
+              e.target.style.borderColor = '#818cf8';
+              e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.35)';
+            }}
+            onBlur={e => {
+              e.target.style.borderColor = 'rgba(255, 255, 255, 0.16)';
+              e.target.style.boxShadow = 'none';
+            }}
+          />
+          <select
+            name="type"
+            value={search.type}
+            onChange={handleChange}
+            style={{
+              padding: '12px 14px',
+              borderRadius: 12,
+              background: '#1e1b4b',
+              border: '1px solid rgba(255, 255, 255, 0.18)',
+              color: '#ffffff',
+              fontSize: '0.95rem',
+              outline: 'none',
+              cursor: 'pointer',
             }}
           >
-            <h3 style={{ marginTop: 0, marginBottom: 18, color: '#2d2369', fontWeight: 700 }}>
-              Propose Swap with {swapModal.username}
+            <option value="teach" style={{ background: '#1e1b4b', color: '#fff' }}>Can Teach</option>
+            <option value="learn" style={{ background: '#1e1b4b', color: '#fff' }}>Want To Learn</option>
+          </select>
+          <button
+            type="submit"
+            disabled={searching}
+            style={{
+              padding: '12px 24px',
+              borderRadius: 12,
+              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+              color: '#ffffff',
+              fontSize: '0.95rem',
+              fontWeight: 700,
+              border: 'none',
+              cursor: searching ? 'default' : 'pointer',
+              boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={e => {
+              if (!searching) {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(99, 102, 241, 0.6)';
+              }
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'none';
+              e.currentTarget.style.boxShadow = '0 4px 15px rgba(99, 102, 241, 0.4)';
+            }}
+          >
+            {searching ? 'Searching…' : 'Search'}
+          </button>
+        </form>
+
+        {error && !swapModal && (
+          <div style={{
+            padding: '11px 14px', borderRadius: 10,
+            background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.35)',
+            color: '#fca5a5', fontSize: '0.88rem', textAlign: 'center', marginBottom: 18,
+          }}>
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div style={{
+            padding: '11px 14px', borderRadius: 10,
+            background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.35)',
+            color: '#6ee7b7', fontSize: '0.88rem', textAlign: 'center', marginBottom: 18,
+          }}>
+            {success}
+          </div>
+        )}
+
+        {results.length === 0 && !searching && !error && (
+          <div style={{ textAlign: 'center', color: '#94a3b8', fontStyle: 'italic', padding: '24px 0', fontSize: '0.92rem' }}>
+            No partners found matching this skill yet. Try another search or filter!
+          </div>
+        )}
+
+        {/* Results List */}
+        {results.length > 0 && (
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {results.map(u => (
+              <li
+                key={u.id}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '16px 20px',
+                  borderRadius: 16,
+                  background: 'rgba(255, 255, 255, 0.04)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
+                  transition: 'all 0.2s ease',
+                  flexWrap: 'wrap',
+                  gap: 12,
+                }}
+              >
+                {/* User Info with Avatar */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{
+                    width: 42, height: 42, borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontWeight: 700, fontSize: '1rem', color: '#fff',
+                    boxShadow: '0 0 12px rgba(99, 102, 241, 0.45)',
+                  }}>
+                    {u.username?.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: '1rem', color: '#f8fafc' }}>
+                      {u.username}
+                    </div>
+                    {u.email && (
+                      <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
+                        {u.email}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button
+                    style={{
+                      padding: '8px 16px',
+                      borderRadius: 10,
+                      background: 'rgba(99, 102, 241, 0.2)',
+                      border: '1px solid rgba(99, 102, 241, 0.45)',
+                      color: '#c7d2fe',
+                      fontSize: '0.88rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      transition: 'all 0.2s',
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = 'rgba(99, 102, 241, 0.35)';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = 'rgba(99, 102, 241, 0.2)';
+                      e.currentTarget.style.transform = 'none';
+                    }}
+                    onClick={() =>
+                      window.dispatchEvent(
+                        new CustomEvent('open-chat', { detail: { id: u.id, username: u.username } })
+                      )
+                    }
+                    title={`Chat with ${u.username}`}
+                  >
+                    💬 Chat
+                  </button>
+
+                  <button
+                    style={{
+                      padding: '8px 18px',
+                      borderRadius: 10,
+                      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                      border: 'none',
+                      color: '#ffffff',
+                      fontSize: '0.88rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 12px rgba(99, 102, 241, 0.35)',
+                      transition: 'all 0.2s',
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                      e.currentTarget.style.boxShadow = '0 6px 18px rgba(99, 102, 241, 0.55)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.transform = 'none';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(99, 102, 241, 0.35)';
+                    }}
+                    onClick={() => openSwap(u)}
+                  >
+                    Send Swap Request
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* ── Swap Request Modal (Themed Glassmorphism) ── */}
+      {swapModal && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0, 0, 0, 0.65)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 10000,
+          padding: 20,
+        }}>
+          <div style={{
+            position: 'relative',
+            width: '100%',
+            maxWidth: 480,
+            padding: '36px 32px',
+            borderRadius: 24,
+            background: 'rgba(23, 23, 56, 0.95)',
+            border: '1px solid rgba(255, 255, 255, 0.16)',
+            boxShadow: '0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(99, 102, 241, 0.3)',
+            color: '#f8fafc',
+          }}>
+            <h3 style={{
+              margin: '0 0 8px 0', fontSize: '1.4rem', fontWeight: 800,
+              background: 'linear-gradient(135deg, #ffffff 40%, #c7d2fe 100%)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            }}>
+              Swap Request with {swapModal.username}
             </h3>
-            <form
-              onSubmit={handleSubmitSwap}
-              style={{ display: 'flex', flexDirection: 'column', gap: 13, marginBottom: 0 }}
-            >
-              <input
-                name="skillToGive"
-                placeholder="Skill you teach"
-                value={form.skillToGive}
-                onChange={handleFormChange}
-                style={modalInputStyle}
-                autoFocus
-              />
-              <input
-                name="skillToGet"
-                placeholder="Skill you want"
-                value={form.skillToGet}
-                onChange={handleFormChange}
-                style={modalInputStyle}
-              />
-              <input
-                name="phoneNumber"
-                placeholder="Your phone number"
-                value={form.phoneNumber}
-                onChange={handleFormChange}
-                style={modalInputStyle}
-                type="tel"
-                autoComplete="tel"
-                pattern="[0-9+\-\s()]{7,}"
-                title="Please enter a valid phone number"
-              />
-              <input
-                name="dateTime"
-                type="datetime-local"
-                value={form.dateTime}
-                onChange={handleFormChange}
-                style={modalInputStyle}
-              />
-              <div style={{ display: 'flex', gap: 10, marginTop: 6 }}>
+            <p style={{ margin: '0 0 20px 0', fontSize: '0.85rem', color: '#94a3b8' }}>
+              Propose a skill trade and schedule a convenient exchange time.
+            </p>
+
+            <form onSubmit={handleSubmitSwap} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 5 }}>
+                  Skill you will teach / give
+                </label>
+                <input
+                  name="skillToGive"
+                  value={form.skillToGive}
+                  onChange={handleFormChange}
+                  placeholder="e.g. Python, React"
+                  required
+                  style={modalInputStyle}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 5 }}>
+                  Skill you want to learn from {swapModal.username}
+                </label>
+                <input
+                  name="skillToGet"
+                  value={form.skillToGet}
+                  onChange={handleFormChange}
+                  placeholder="e.g. Java, Docker"
+                  required
+                  style={modalInputStyle}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 5 }}>
+                  Phone / Contact info
+                </label>
+                <input
+                  name="phoneNumber"
+                  value={form.phoneNumber}
+                  onChange={handleFormChange}
+                  placeholder="e.g. +1 234 567 8900"
+                  required
+                  style={modalInputStyle}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 5 }}>
+                  Proposed Date & Time
+                </label>
+                <input
+                  type="datetime-local"
+                  name="dateTime"
+                  value={form.dateTime}
+                  onChange={handleFormChange}
+                  required
+                  style={{ ...modalInputStyle, colorScheme: 'dark' }}
+                />
+              </div>
+
+              {error && (
+                <div style={{
+                  padding: '9px 12px', borderRadius: 8,
+                  background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.35)',
+                  color: '#fca5a5', fontSize: '0.82rem', textAlign: 'center',
+                }}>
+                  {error}
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
                 <button
                   type="submit"
                   style={{
-                    ...buttonStyle,
-                    flex: 1,
-                    padding: '13px 0',
-                    fontWeight: 700,
-                    fontSize: '1.1rem'
+                    flex: 1, padding: '12px', borderRadius: 12,
+                    background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                    color: '#ffffff', fontSize: '0.95rem', fontWeight: 700,
+                    border: 'none', cursor: 'pointer',
+                    boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)',
                   }}
                 >
                   Send Request
@@ -351,14 +459,10 @@ const SkillSearch = () => {
                   type="button"
                   onClick={() => setSwapModal(null)}
                   style={{
-                    flex: 1,
-                    padding: '13px 0',
-                    background: '#f1f5ff',
-                    borderRadius: 7,
-                    border: '1px solid #d8d8f2',
-                    color: '#4e46e5',
-                    fontWeight: 700,
-                    fontSize: '1.1rem',
+                    padding: '12px 20px', borderRadius: 12,
+                    background: 'rgba(255, 255, 255, 0.08)',
+                    border: '1px solid rgba(255, 255, 255, 0.18)',
+                    color: '#e2e8f0', fontSize: '0.95rem', fontWeight: 600,
                     cursor: 'pointer',
                   }}
                 >
@@ -366,13 +470,23 @@ const SkillSearch = () => {
                 </button>
               </div>
             </form>
-            {error && <p style={{ color: 'red', marginTop: 10 }}>{error}</p>}
-            {success && <p style={{ color: 'green', marginTop: 10 }}>{success}</p>}
           </div>
         </div>
       )}
     </div>
   );
+};
+
+const modalInputStyle = {
+  width: '100%',
+  padding: '10px 14px',
+  borderRadius: 10,
+  background: 'rgba(255, 255, 255, 0.07)',
+  border: '1px solid rgba(255, 255, 255, 0.16)',
+  color: '#ffffff',
+  fontSize: '0.92rem',
+  outline: 'none',
+  boxSizing: 'border-box',
 };
 
 export default SkillSearch;

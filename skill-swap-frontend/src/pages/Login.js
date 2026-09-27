@@ -9,6 +9,7 @@ const Login = () => {
 
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,60 +18,219 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await api.post('/auth/login', form);
-      login(response.data); // store logged-in user data in context/localStorage
-      navigate('/dashboard'); // redirect to dashboard on successful login
+      login(response.data);
+      navigate('/dashboard');
     } catch (err) {
       if (err.response && err.response.status === 401) {
         setError('Invalid username or password');
       } else {
         setError('Login failed. Please try again.');
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-300 via-purple-200 to-pink-300">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-        <h2 className="text-indigo-700 text-3xl font-bold mb-8 text-center">Skill Swap Login</h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            className="w-full border border-gray-300 px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={form.username}
-            onChange={handleChange}
-            required
-            autoFocus
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            className="w-full border border-gray-300 px-4 py-3 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '24px',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* Background Glow Orbs */}
+      <div style={{
+        position: 'absolute', top: '15%', left: '20%',
+        width: 360, height: 360,
+        background: 'rgba(99, 102, 241, 0.25)',
+        borderRadius: '50%', filter: 'blur(100px)', pointerEvents: 'none',
+      }} />
+      <div style={{
+        position: 'absolute', bottom: '15%', right: '20%',
+        width: 340, height: 340,
+        background: 'rgba(168, 85, 247, 0.2)',
+        borderRadius: '50%', filter: 'blur(100px)', pointerEvents: 'none',
+      }} />
+
+      {/* Glass Card */}
+      <div style={{
+        position: 'relative',
+        width: '100%',
+        maxWidth: 440,
+        padding: '44px 36px',
+        borderRadius: 24,
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.12)',
+        boxShadow: '0 25px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.2)',
+        color: '#f8fafc',
+      }}>
+        {/* Header with Icon */}
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <div style={{
+            width: 60, height: 60, borderRadius: '50%', margin: '0 auto 16px',
+            background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 0 25px rgba(99, 102, 241, 0.65)',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
+          }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M16 3h5v5" />
+              <path d="M4 20L21 3" />
+              <path d="M21 16v5h-5" />
+              <path d="M15 15l6 6" />
+              <path d="M4 4l5 5" />
+            </svg>
+          </div>
+          <h2 style={{
+            margin: '0 0 6px 0',
+            fontSize: '2rem',
+            fontWeight: 800,
+            letterSpacing: '-0.5px',
+            background: 'linear-gradient(135deg, #ffffff 40%, #c7d2fe 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
+            Welcome Back
+          </h2>
+          <p style={{ margin: 0, fontSize: '0.9rem', color: '#94a3b8' }}>
+            Sign in to continue swapping skills
+          </p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 6 }}>
+              Username
+            </label>
+            <input
+              type="text"
+              name="username"
+              placeholder="Enter your username"
+              value={form.username}
+              onChange={handleChange}
+              required
+              autoFocus
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                borderRadius: 12,
+                background: 'rgba(255, 255, 255, 0.07)',
+                border: '1px solid rgba(255, 255, 255, 0.16)',
+                color: '#ffffff',
+                fontSize: '0.95rem',
+                outline: 'none',
+                boxSizing: 'border-box',
+                transition: 'all 0.2s',
+              }}
+              onFocus={e => {
+                e.target.style.borderColor = '#818cf8';
+                e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.35)';
+              }}
+              onBlur={e => {
+                e.target.style.borderColor = 'rgba(255, 255, 255, 0.16)';
+                e.target.style.boxShadow = 'none';
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 6 }}>
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              placeholder="••••••••"
+              value={form.password}
+              onChange={handleChange}
+              required
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                borderRadius: 12,
+                background: 'rgba(255, 255, 255, 0.07)',
+                border: '1px solid rgba(255, 255, 255, 0.16)',
+                color: '#ffffff',
+                fontSize: '0.95rem',
+                outline: 'none',
+                boxSizing: 'border-box',
+                transition: 'all 0.2s',
+              }}
+              onFocus={e => {
+                e.target.style.borderColor = '#818cf8';
+                e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.35)';
+              }}
+              onBlur={e => {
+                e.target.style.borderColor = 'rgba(255, 255, 255, 0.16)';
+                e.target.style.boxShadow = 'none';
+              }}
+            />
+          </div>
+
+          {error && (
+            <div style={{
+              padding: '10px 14px',
+              borderRadius: 10,
+              background: 'rgba(239, 68, 68, 0.15)',
+              border: '1px solid rgba(239, 68, 68, 0.35)',
+              color: '#fca5a5',
+              fontSize: '0.85rem',
+              textAlign: 'center',
+            }}>
+              {error}
+            </div>
+          )}
+
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white text-lg font-semibold py-3 rounded hover:bg-indigo-700 transition"
+            disabled={loading}
+            style={{
+              marginTop: 6,
+              padding: '13px',
+              borderRadius: 12,
+              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+              color: '#ffffff',
+              fontSize: '1rem',
+              fontWeight: 700,
+              border: 'none',
+              cursor: loading ? 'default' : 'pointer',
+              opacity: loading ? 0.7 : 1,
+              boxShadow: '0 4px 20px rgba(99, 102, 241, 0.45)',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={e => {
+              if (!loading) {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 25px rgba(99, 102, 241, 0.65)';
+              }
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'none';
+              e.currentTarget.style.boxShadow = '0 4px 20px rgba(99, 102, 241, 0.45)';
+            }}
           >
-            Login
+            {loading ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
-        {error && (
-          <p className="mt-4 text-center text-red-600 font-medium">
-            {error}
-          </p>
-        )}
-        <p className="mt-6 text-center text-gray-600">
+
+        {/* Footer */}
+        <p style={{ marginTop: 24, textAlign: 'center', fontSize: '0.88rem', color: '#94a3b8' }}>
           Don't have an account?{' '}
           <button
             onClick={() => navigate('/register')}
-            className="text-indigo-600 hover:underline font-semibold"
+            style={{
+              background: 'none', border: 'none', padding: 0,
+              color: '#818cf8', fontWeight: 600, cursor: 'pointer',
+              textDecoration: 'underline',
+            }}
           >
             Register
           </button>

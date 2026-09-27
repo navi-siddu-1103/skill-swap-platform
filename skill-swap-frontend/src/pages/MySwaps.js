@@ -31,74 +31,235 @@ const MySwaps = () => {
     }
   };
 
+  const getStatusBadge = (status) => {
+    const s = (status || '').toUpperCase();
+    if (s === 'ACCEPTED') {
+      return (
+        <span style={{
+          padding: '4px 12px', borderRadius: 999,
+          background: 'rgba(16, 185, 129, 0.2)', border: '1px solid rgba(52, 211, 153, 0.45)',
+          color: '#6ee7b7', fontSize: '0.78rem', fontWeight: 700,
+        }}>
+          ACCEPTED
+        </span>
+      );
+    }
+    if (s === 'REJECTED') {
+      return (
+        <span style={{
+          padding: '4px 12px', borderRadius: 999,
+          background: 'rgba(239, 68, 68, 0.2)', border: '1px solid rgba(248, 113, 113, 0.45)',
+          color: '#fca5a5', fontSize: '0.78rem', fontWeight: 700,
+        }}>
+          REJECTED
+        </span>
+      );
+    }
+    return (
+      <span style={{
+        padding: '4px 12px', borderRadius: 999,
+        background: 'rgba(245, 158, 11, 0.2)', border: '1px solid rgba(251, 191, 36, 0.45)',
+        color: '#fde047', fontSize: '0.78rem', fontWeight: 700,
+      }}>
+        PENDING
+      </span>
+    );
+  };
+
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8">
-      <button
-        className="mb-6 text-indigo-600 hover:underline"
-        onClick={() => navigate('/')}
-        type="button"
-      >
-        &larr; Back to Dashboard
-      </button>
+    <div style={{
+      minHeight: 'calc(100vh - 64px)',
+      padding: '40px 24px 60px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      position: 'relative',
+    }}>
+      {/* Background Glow */}
+      <div style={{
+        position: 'absolute', top: '15%', left: '20%',
+        width: 360, height: 360,
+        background: 'rgba(99, 102, 241, 0.2)',
+        borderRadius: '50%', filter: 'blur(100px)', pointerEvents: 'none',
+      }} />
 
-      <h2 className="text-2xl font-semibold text-indigo-700 mb-4">Incoming Swap Requests</h2>
-      {error && (
-        <div className="bg-red-100 text-red-800 px-4 py-2 rounded mb-4">{error}</div>
-      )}
+      {/* Main Glass Container */}
+      <div style={{
+        position: 'relative',
+        width: '100%',
+        maxWidth: 820,
+        padding: '36px 32px',
+        borderRadius: 24,
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.12)',
+        boxShadow: '0 25px 60px rgba(0, 0, 0, 0.45)',
+        color: '#f8fafc',
+      }}>
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
+          <h2 style={{
+            margin: 0,
+            fontSize: '2rem',
+            fontWeight: 800,
+            letterSpacing: '-0.5px',
+            background: 'linear-gradient(135deg, #ffffff 40%, #c7d2fe 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
+            My Skill Swaps
+          </h2>
 
-      {incoming.length === 0 ? (
-        <div className="bg-yellow-50 text-yellow-700 px-4 py-3 rounded mb-8">
-          You have no pending incoming swap requests.
+          <button
+            type="button"
+            onClick={() => navigate('/dashboard')}
+            style={{
+              background: 'none', border: 'none', padding: 0,
+              color: '#a5b4fc', fontSize: '0.9rem', fontWeight: 600,
+              cursor: 'pointer',
+            }}
+            onMouseEnter={e => e.currentTarget.style.color = '#ffffff'}
+            onMouseLeave={e => e.currentTarget.style.color = '#a5b4fc'}
+          >
+            &larr; Back to Dashboard
+          </button>
         </div>
-      ) : (
-        <ul className="space-y-4">
-          {incoming.map(req => (
-            <li className="bg-white rounded shadow p-4" key={req.id}>
-              <p><strong>From:</strong> {req.sender?.username || 'Unknown'}</p>
-              <p><strong>Skill Wanted:</strong> {req.desiredSkill}</p>
-              <p><strong>Skill Offered:</strong> {req.requestedSkill}</p>
-              <p><strong>Phone:</strong> {req.phoneNumber || 'N/A'}</p>
-              <p><strong>Proposed Time:</strong> {new Date(req.proposedDateTime).toLocaleString()}</p>
-              <div className="mt-2 flex gap-4">
-                <button
-                  onClick={() => handleRespond(req.id, 'ACCEPTED')}
-                  className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
-                  type="button"
-                >
-                  Accept
-                </button>
-                <button
-                  onClick={() => handleRespond(req.id, 'REJECTED')}
-                  className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700"
-                  type="button"
-                >
-                  Reject
-                </button>
+
+        {error && (
+          <div style={{
+            padding: '11px 16px', borderRadius: 10,
+            background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.35)',
+            color: '#fca5a5', fontSize: '0.88rem', marginBottom: 20,
+          }}>
+            {error}
+          </div>
+        )}
+
+        {/* Incoming Swap Requests */}
+        <h3 style={{
+          margin: '0 0 16px 0', fontSize: '1.25rem', fontWeight: 700,
+          color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: 8,
+        }}>
+          <span>📥</span> Incoming Swap Requests
+        </h3>
+
+        {incoming.length === 0 ? (
+          <div style={{
+            padding: '20px 24px', borderRadius: 16,
+            background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)',
+            color: '#94a3b8', fontSize: '0.9rem', marginBottom: 36,
+          }}>
+            You have no pending incoming swap requests.
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 36 }}>
+            {incoming.map(req => (
+              <div
+                key={req.id}
+                style={{
+                  padding: '20px 24px', borderRadius: 18,
+                  background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
+                  <div>
+                    <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f8fafc', marginBottom: 4 }}>
+                      From: <span style={{ color: '#818cf8' }}>{req.sender?.username || 'Unknown'}</span>
+                    </div>
+                    <div style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6 }}>
+                      <div>Skill Wanted: <strong style={{ color: '#fde047' }}>{req.desiredSkill}</strong></div>
+                      <div>Skill Offered: <strong style={{ color: '#6ee7b7' }}>{req.requestedSkill}</strong></div>
+                      <div>Contact: <span style={{ color: '#94a3b8' }}>{req.phoneNumber || 'N/A'}</span></div>
+                      <div>Proposed Time: <span style={{ color: '#94a3b8' }}>{new Date(req.proposedDateTime).toLocaleString()}</span></div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div style={{ display: 'flex', gap: 10, alignSelf: 'center' }}>
+                    <button
+                      onClick={() => handleRespond(req.id, 'ACCEPTED')}
+                      style={{
+                        padding: '8px 18px', borderRadius: 10,
+                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                        border: 'none', color: '#fff', fontSize: '0.88rem', fontWeight: 700,
+                        cursor: 'pointer', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)',
+                        transition: 'all 0.2s',
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
+                      onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => handleRespond(req.id, 'REJECTED')}
+                      style={{
+                        padding: '8px 18px', borderRadius: 10,
+                        background: 'rgba(239, 68, 68, 0.15)',
+                        border: '1px solid rgba(239, 68, 68, 0.35)',
+                        color: '#fca5a5', fontSize: '0.88rem', fontWeight: 600,
+                        cursor: 'pointer', transition: 'all 0.2s',
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.25)'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)'}
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </div>
               </div>
-            </li>
-          ))}
-        </ul>
-      )}
+            ))}
+          </div>
+        )}
 
-      <h2 className="text-2xl font-semibold text-indigo-700 mt-10 mb-4">Outgoing Swap Requests</h2>
-      {outgoing.length === 0 ? (
-        <div className="bg-blue-50 text-blue-700 px-4 py-3 rounded">
-          You have not sent any swap requests.
-        </div>
-      ) : (
-        <ul className="space-y-4">
-          {outgoing.map(req => (
-            <li className="bg-white rounded shadow p-4" key={req.id}>
-              <p><strong>To:</strong> {req.recipient?.username || 'Unknown'}</p>
-              <p><strong>Skill Offered:</strong> {req.requestedSkill}</p>
-              <p><strong>Skill Wanted:</strong> {req.desiredSkill}</p>
-              <p><strong>Phone:</strong> {req.phoneNumber || 'N/A'}</p>
-              <p><strong>Status:</strong> {req.status}</p>
-              <p><strong>Proposed Time:</strong> {new Date(req.proposedDateTime).toLocaleString()}</p>
-            </li>
-          ))}
-        </ul>
-      )}
+        {/* Outgoing Swap Requests */}
+        <h3 style={{
+          margin: '0 0 16px 0', fontSize: '1.25rem', fontWeight: 700,
+          color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: 8,
+        }}>
+          <span>📤</span> Outgoing Swap Requests
+        </h3>
+
+        {outgoing.length === 0 ? (
+          <div style={{
+            padding: '20px 24px', borderRadius: 16,
+            background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)',
+            color: '#94a3b8', fontSize: '0.9rem',
+          }}>
+            You have not sent any swap requests yet.
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {outgoing.map(req => (
+              <div
+                key={req.id}
+                style={{
+                  padding: '20px 24px', borderRadius: 18,
+                  background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12,
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f8fafc', marginBottom: 4 }}>
+                    To: <span style={{ color: '#818cf8' }}>{req.recipient?.username || 'Unknown'}</span>
+                  </div>
+                  <div style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.6 }}>
+                    <div>Skill Offered: <strong style={{ color: '#6ee7b7' }}>{req.requestedSkill}</strong></div>
+                    <div>Skill Wanted: <strong style={{ color: '#fde047' }}>{req.desiredSkill}</strong></div>
+                    <div>Contact: <span style={{ color: '#94a3b8' }}>{req.phoneNumber || 'N/A'}</span></div>
+                    <div>Proposed Time: <span style={{ color: '#94a3b8' }}>{new Date(req.proposedDateTime).toLocaleString()}</span></div>
+                  </div>
+                </div>
+
+                <div>
+                  {getStatusBadge(req.status)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
