@@ -69,6 +69,8 @@ public class DatabaseConfig {
             config.setDriverClassName("org.h2.Driver");
         } else if (url.startsWith("jdbc:mysql:")) {
             config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        } else if (url.startsWith("jdbc:postgresql:")) {
+            config.setDriverClassName("org.postgresql.Driver");
         }
 
         return new HikariDataSource(config);
