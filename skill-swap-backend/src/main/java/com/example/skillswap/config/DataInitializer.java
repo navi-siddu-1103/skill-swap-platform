@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -29,17 +30,12 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.count() >= 3) {
-            log.info("Database already contains users. Skipping initial seed.");
-            return;
-        }
-
-        log.info("Seeding initial community users and skills for skill swapping...");
+        log.info("Checking and seeding community users and skills...");
 
         createUserWithSkills(
                 "Naveen",
                 "naveen@gmail.com",
-                "Naveen@1103",
+                "Naveen123",
                 List.of(
                         new String[]{"Java", "teach"},
                         new String[]{"Spring Boot", "teach"},
@@ -53,7 +49,7 @@ public class DataInitializer implements CommandLineRunner {
         createUserWithSkills(
                 "Manoj",
                 "manoj@gmail.com",
-                "Manoj@1103",
+                "Manoj123",
                 List.of(
                         new String[]{"RAG", "teach"},
                         new String[]{"Gen AI", "teach"},
@@ -66,7 +62,7 @@ public class DataInitializer implements CommandLineRunner {
         createUserWithSkills(
                 "Priya",
                 "priya@gmail.com",
-                "Priya@1103",
+                "Priya123",
                 List.of(
                         new String[]{"UI/UX Design", "teach"},
                         new String[]{"Figma", "teach"},
@@ -79,7 +75,7 @@ public class DataInitializer implements CommandLineRunner {
         createUserWithSkills(
                 "Rahul",
                 "rahul@gmail.com",
-                "Rahul@1103",
+                "Rahul123",
                 List.of(
                         new String[]{"Machine Learning", "teach"},
                         new String[]{"Python", "teach"},
@@ -92,7 +88,7 @@ public class DataInitializer implements CommandLineRunner {
         createUserWithSkills(
                 "Ananya",
                 "ananya@gmail.com",
-                "Ananya@1103",
+                "Ananya123",
                 List.of(
                         new String[]{"Cloud Architecture", "teach"},
                         new String[]{"AWS", "teach"},
@@ -102,11 +98,19 @@ public class DataInitializer implements CommandLineRunner {
                 )
         );
 
-        log.info("Initial community users and skills seeded successfully!");
+        log.info("Community users and skills verified successfully!");
     }
 
     private void createUserWithSkills(String username, String email, String rawPassword, List<String[]> skills) {
-        if (userRepository.findByUsername(username).isPresent()) {
+        Optional<User> existing = userRepository.findByUsername(username);
+        if (existing.isPresent()) {
+            User u = existing.get();
+            // Sync password to new standard if it doesn't match
+            if (!passwordEncoder.matches(rawPassword, u.getPassword())) {
+                u.setPassword(passwordEncoder.encode(rawPassword));
+                userRepository.save(u);
+                log.info("Updated credentials for existing user {}", username);
+            }
             return;
         }
 

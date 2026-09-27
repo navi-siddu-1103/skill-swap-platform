@@ -58,5 +58,7 @@ public class UserService {
         return userRepo.findByEmail(clean);
     }
 
-    // Add authentication/getByID helpers as needed
+    public User save(User user) {
+        return userRepo.save(user);
+    }
 }
