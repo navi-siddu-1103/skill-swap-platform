@@ -12,10 +12,12 @@ public class SkillSwapRequest {
 
     @ManyToOne
     @JoinColumn(name = "sender_id")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"password", "skills"})
     private User sender;
 
     @ManyToOne
     @JoinColumn(name = "recipient_id")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"password", "skills"})
     private User recipient;
 
     private String requestedSkill;

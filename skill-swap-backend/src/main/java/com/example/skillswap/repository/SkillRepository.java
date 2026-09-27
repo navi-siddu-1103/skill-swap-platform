@@ -7,6 +7,10 @@ import java.util.List;
 public interface SkillRepository extends JpaRepository<Skill, Long> {
     List<Skill> findByNameAndType(String name, String type);
 
+    List<Skill> findByNameContainingIgnoreCase(String name);
+
+    List<Skill> findByTypeIgnoreCase(String type);
+
     List<Skill> findByNameContainingIgnoreCaseAndTypeIgnoreCase(String name, String type);
 
     List<Skill> findByUserId(Long userId);

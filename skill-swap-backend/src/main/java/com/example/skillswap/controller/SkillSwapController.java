@@ -5,7 +5,9 @@ import com.example.skillswap.model.User;
 import com.example.skillswap.repository.UserRepository;
 import com.example.skillswap.service.SkillSwapService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -22,27 +24,56 @@ public class SkillSwapController {
 
     // Send a skill swap request
     @PostMapping("/request")
-    public SkillSwapRequest sendRequest(@RequestBody Map<String, String> body) {
-        User sender = userRepo.findById(Long.parseLong(body.get("senderId")))
-                .orElseThrow(() -> new RuntimeException("Sender not found"));
-        User recipient = userRepo.findById(Long.parseLong(body.get("recipientId")))
-                .orElseThrow(() -> new RuntimeException("Recipient not found"));
-        String requestedSkill = body.get("requestedSkill");
-        String desiredSkill = body.get("desiredSkill");
-        LocalDateTime proposedDateTime = LocalDateTime.parse(body.get("proposedDateTime"));
-        String phoneNumber = body.get("phoneNumber"); // <-- new field extracted here
+    public ResponseEntity<?> sendRequest(@RequestBody Map<String, String> body) {
+        try {
+            Long senderId = Long.parseLong(body.get("senderId"));
+            Long recipientId = Long.parseLong(body.get("recipientId"));
 
-        // Pass phoneNumber to the service layer
-        return swapService.sendSwapRequest(
-                sender.getId(),
-                recipient.getId(),
-                requestedSkill,
-                desiredSkill,
-                proposedDateTime,
-                phoneNumber); // pass phoneNumber here
+            User sender = userRepo.findById(senderId)
+                    .orElseThrow(() -> new RuntimeException("Sender not found"));
+            User recipient = userRepo.findById(recipientId)
+                    .orElseThrow(() -> new RuntimeException("Recipient not found"));
+
+            String requestedSkill = body.get("requestedSkill");
+            String desiredSkill = body.get("desiredSkill");
+            String proposedDateTimeStr = body.get("proposedDateTime");
+            String phoneNumber = body.get("phoneNumber");
+
+            LocalDateTime proposedDateTime = parseDateTime(proposedDateTimeStr);
+
+            SkillSwapRequest saved = swapService.sendSwapRequest(
+                    sender.getId(),
+                    recipient.getId(),
+                    requestedSkill,
+                    desiredSkill,
+                    proposedDateTime,
+                    phoneNumber);
+
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage() != null ? e.getMessage() : "Failed to create swap request"));
+        }
     }
 
-    // ... existing methods unchanged ...
+    private LocalDateTime parseDateTime(String dtStr) {
+        if (dtStr == null || dtStr.isBlank()) {
+            return LocalDateTime.now().plusDays(1);
+        }
+        try {
+            return LocalDateTime.parse(dtStr);
+        } catch (Exception e1) {
+            try {
+                return LocalDateTime.parse(dtStr.replace(" ", "T"));
+            } catch (Exception e2) {
+                try {
+                    return java.time.ZonedDateTime.parse(dtStr).toLocalDateTime();
+                } catch (Exception e3) {
+                    return LocalDateTime.now().plusDays(1);
+                }
+            }
+        }
+    }
 
     // Get incoming (pending) swap requests for a user
     @GetMapping("/pending/{userId}")
