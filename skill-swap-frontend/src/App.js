@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect, useCallback, useRef } from 'rea
 import { Routes, Route, Navigate, Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from './context/AuthContext';
 import ChatWindow from './components/ChatWindow';
+import SplashScreen from './components/SplashScreen';
 import api from './api/axios';
 
 import Register    from './pages/Register';
@@ -236,6 +237,7 @@ function App() {
   const { user } = useContext(AuthContext);
   const [chatPartner, setChatPartner] = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [showSplash, setShowSplash] = useState(true);
 
   const refreshUnread = useCallback(() => {
     if (!user) return;
@@ -262,6 +264,7 @@ function App() {
 
   return (
     <>
+      {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
       <Navbar
         unreadCount={unreadCount}
         onOpenChat={openChat}
