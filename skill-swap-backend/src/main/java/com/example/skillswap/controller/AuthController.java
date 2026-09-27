@@ -72,35 +72,6 @@ public class AuthController {
                 userService.save(user);
             }
 
-            // 3. Fallback: seeded user credentials sync (supports Naveen123 and Naveen@1103)
-            if (!matches && "naveen".equalsIgnoreCase(user.getUsername())) {
-                if ("Naveen123".equals(password) || "Naveen@1103".equals(password)) {
-                    matches = true;
-                    user.setPassword(passwordEncoder.encode(password));
-                    userService.save(user);
-                }
-            }
-            if (!matches && "manoj".equalsIgnoreCase(user.getUsername()) && ("Manoj123".equals(password) || "Manoj@1103".equals(password))) {
-                matches = true;
-                user.setPassword(passwordEncoder.encode(password));
-                userService.save(user);
-            }
-            if (!matches && "priya".equalsIgnoreCase(user.getUsername()) && ("Priya123".equals(password) || "Priya@1103".equals(password))) {
-                matches = true;
-                user.setPassword(passwordEncoder.encode(password));
-                userService.save(user);
-            }
-            if (!matches && "rahul".equalsIgnoreCase(user.getUsername()) && ("Rahul123".equals(password) || "Rahul@1103".equals(password))) {
-                matches = true;
-                user.setPassword(passwordEncoder.encode(password));
-                userService.save(user);
-            }
-            if (!matches && "ananya".equalsIgnoreCase(user.getUsername()) && ("Ananya123".equals(password) || "Ananya@1103".equals(password))) {
-                matches = true;
-                user.setPassword(passwordEncoder.encode(password));
-                userService.save(user);
-            }
-
             if (matches) {
                 return ResponseEntity.ok(
                         Map.of(

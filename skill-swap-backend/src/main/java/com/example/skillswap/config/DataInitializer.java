@@ -30,7 +30,12 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        log.info("Checking and seeding community users and skills...");
+        if (userRepository.count() > 0) {
+            log.info("Database already contains users. Skipping initial seed.");
+            return;
+        }
+
+        log.info("Seeding initial community users and skills for fresh database...");
 
         createUserWithSkills(
                 "Naveen",
@@ -102,15 +107,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void createUserWithSkills(String username, String email, String rawPassword, List<String[]> skills) {
-        Optional<User> existing = userRepository.findByUsername(username);
-        if (existing.isPresent()) {
-            User u = existing.get();
-            // Sync password to new standard if it doesn't match
-            if (!passwordEncoder.matches(rawPassword, u.getPassword())) {
-                u.setPassword(passwordEncoder.encode(rawPassword));
-                userRepository.save(u);
-                log.info("Updated credentials for existing user {}", username);
-            }
+        if (userRepository.findByUsername(username).isPresent()) {
             return;
         }
 
