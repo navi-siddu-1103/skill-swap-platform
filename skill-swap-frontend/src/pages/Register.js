@@ -4,12 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
+  const [form, setForm] = useState({ username: '', email: '', password: '', confirmPassword: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -21,21 +16,11 @@ const Register = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-    if (form.password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
+    if (form.password !== form.confirmPassword) { setError('Passwords do not match'); return; }
+    if (form.password.length < 6) { setError('Password must be at least 6 characters'); return; }
     setLoading(true);
     try {
-      await api.post('/auth/register', {
-        username: form.username,
-        password: form.password,
-        email: form.email,
-      });
+      await api.post('/auth/register', { username: form.username, password: form.password, email: form.email });
       setSuccess(true);
       setTimeout(() => navigate('/login'), 1500);
     } catch (err) {
@@ -47,22 +32,22 @@ const Register = () => {
 
   const inputStyle = {
     width: '100%',
-    padding: '11px 16px',
+    padding: '13px 16px',
     borderRadius: 12,
     background: 'rgba(255, 255, 255, 0.07)',
     border: '1px solid rgba(255, 255, 255, 0.16)',
     color: '#ffffff',
-    fontSize: '0.95rem',
+    fontSize: '1rem',
     outline: 'none',
     boxSizing: 'border-box',
     transition: 'all 0.2s',
+    minHeight: 50,
   };
 
   const handleFocus = e => {
     e.target.style.borderColor = '#818cf8';
     e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.35)';
   };
-
   const handleBlur = e => {
     e.target.style.borderColor = 'rgba(255, 255, 255, 0.16)';
     e.target.style.boxShadow = 'none';
@@ -74,22 +59,22 @@ const Register = () => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '24px',
+      padding: 'clamp(16px, 5vw, 32px)',
       position: 'relative',
       overflow: 'hidden',
     }}>
       {/* Background Glow Orbs */}
       <div style={{
-        position: 'absolute', top: '15%', left: '20%',
-        width: 360, height: 360,
+        position: 'absolute', top: '10%', left: '15%',
+        width: 'clamp(150px, 28vw, 360px)', height: 'clamp(150px, 28vw, 360px)',
         background: 'rgba(99, 102, 241, 0.25)',
-        borderRadius: '50%', filter: 'blur(100px)', pointerEvents: 'none',
+        borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none',
       }} />
       <div style={{
-        position: 'absolute', bottom: '15%', right: '20%',
-        width: 340, height: 340,
+        position: 'absolute', bottom: '10%', right: '15%',
+        width: 'clamp(130px, 25vw, 340px)', height: 'clamp(130px, 25vw, 340px)',
         background: 'rgba(168, 85, 247, 0.2)',
-        borderRadius: '50%', filter: 'blur(100px)', pointerEvents: 'none',
+        borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none',
       }} />
 
       {/* Glass Card */}
@@ -97,24 +82,24 @@ const Register = () => {
         position: 'relative',
         width: '100%',
         maxWidth: 460,
-        padding: '40px 36px',
-        borderRadius: 24,
+        padding: 'clamp(24px, 6vw, 40px) clamp(18px, 5vw, 36px)',
+        borderRadius: 'clamp(16px, 4vw, 24px)',
         background: 'rgba(255, 255, 255, 0.05)',
         backdropFilter: 'blur(20px)',
         border: '1px solid rgba(255, 255, 255, 0.12)',
         boxShadow: '0 25px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.2)',
         color: '#f8fafc',
       }}>
-        {/* Header with Icon */}
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <div style={{
-            width: 58, height: 58, borderRadius: '50%', margin: '0 auto 14px',
+            width: 56, height: 56, borderRadius: '50%', margin: '0 auto 12px',
             background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             boxShadow: '0 0 25px rgba(99, 102, 241, 0.65)',
             border: '2px solid rgba(255, 255, 255, 0.3)',
           }}>
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
               <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
               <circle cx="8.5" cy="7" r="4" />
               <line x1="20" y1="8" x2="20" y2="14" />
@@ -123,7 +108,7 @@ const Register = () => {
           </div>
           <h2 style={{
             margin: '0 0 6px 0',
-            fontSize: '1.9rem',
+            fontSize: 'clamp(1.5rem, 5vw, 1.9rem)',
             fontWeight: 800,
             letterSpacing: '-0.5px',
             background: 'linear-gradient(135deg, #ffffff 40%, #c7d2fe 100%)',
@@ -139,96 +124,54 @@ const Register = () => {
 
         {success ? (
           <div style={{
-            padding: '24px 16px',
-            borderRadius: 16,
-            background: 'rgba(16, 185, 129, 0.15)',
-            border: '1px solid rgba(16, 185, 129, 0.4)',
-            textAlign: 'center',
-            color: '#6ee7b7',
+            padding: '24px 16px', borderRadius: 16,
+            background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)',
+            textAlign: 'center', color: '#6ee7b7',
           }}>
             <div style={{ fontSize: '2rem', marginBottom: 8 }}>🎉</div>
             <div style={{ fontWeight: 700, fontSize: '1.05rem', marginBottom: 4 }}>Account created successfully!</div>
             <div style={{ fontSize: '0.85rem', opacity: 0.9 }}>Redirecting you to login…</div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 5 }}>
                 Username
               </label>
-              <input
-                type="text"
-                name="username"
-                placeholder="Choose a username"
-                value={form.username}
-                onChange={handleChange}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                required
-                style={inputStyle}
-              />
+              <input type="text" name="username" placeholder="Choose a username"
+                value={form.username} onChange={handleChange}
+                onFocus={handleFocus} onBlur={handleBlur} required style={inputStyle} />
             </div>
-
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 5 }}>
                 Email
               </label>
-              <input
-                type="email"
-                name="email"
-                placeholder="your.email@example.com"
-                value={form.email}
-                onChange={handleChange}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                required
-                style={inputStyle}
-              />
+              <input type="email" name="email" placeholder="your.email@example.com"
+                value={form.email} onChange={handleChange}
+                onFocus={handleFocus} onBlur={handleBlur} required style={inputStyle} />
             </div>
-
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 5 }}>
                 Password (min 6 characters)
               </label>
-              <input
-                type="password"
-                name="password"
-                placeholder="••••••••"
-                value={form.password}
-                onChange={handleChange}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                required
-                style={inputStyle}
-              />
+              <input type="password" name="password" placeholder="••••••••"
+                value={form.password} onChange={handleChange}
+                onFocus={handleFocus} onBlur={handleBlur} required style={inputStyle} />
             </div>
-
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 5 }}>
                 Confirm Password
               </label>
-              <input
-                type="password"
-                name="confirmPassword"
-                placeholder="••••••••"
-                value={form.confirmPassword}
-                onChange={handleChange}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                required
-                style={inputStyle}
-              />
+              <input type="password" name="confirmPassword" placeholder="••••••••"
+                value={form.confirmPassword} onChange={handleChange}
+                onFocus={handleFocus} onBlur={handleBlur} required style={inputStyle} />
             </div>
 
             {error && (
               <div style={{
-                padding: '10px 14px',
-                borderRadius: 10,
-                background: 'rgba(239, 68, 68, 0.15)',
-                border: '1px solid rgba(239, 68, 68, 0.35)',
-                color: '#fca5a5',
-                fontSize: '0.85rem',
-                textAlign: 'center',
+                padding: '10px 14px', borderRadius: 10,
+                background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.35)',
+                color: '#fca5a5', fontSize: '0.88rem', textAlign: 'center',
               }}>
                 {error}
               </div>
@@ -238,18 +181,12 @@ const Register = () => {
               type="submit"
               disabled={loading}
               style={{
-                marginTop: 6,
-                padding: '12px',
-                borderRadius: 12,
+                marginTop: 4, padding: '14px', borderRadius: 12,
                 background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-                color: '#ffffff',
-                fontSize: '1rem',
-                fontWeight: 700,
-                border: 'none',
-                cursor: loading ? 'default' : 'pointer',
-                opacity: loading ? 0.7 : 1,
-                boxShadow: '0 4px 20px rgba(99, 102, 241, 0.45)',
-                transition: 'all 0.2s',
+                color: '#ffffff', fontSize: '1rem', fontWeight: 700,
+                border: 'none', cursor: loading ? 'default' : 'pointer',
+                opacity: loading ? 0.7 : 1, boxShadow: '0 4px 20px rgba(99, 102, 241, 0.45)',
+                transition: 'all 0.2s', minHeight: 50,
               }}
               onMouseEnter={e => {
                 if (!loading) {
@@ -267,14 +204,14 @@ const Register = () => {
           </form>
         )}
 
-        <p style={{ marginTop: 22, textAlign: 'center', fontSize: '0.88rem', color: '#94a3b8' }}>
+        <p style={{ marginTop: 20, textAlign: 'center', fontSize: '0.9rem', color: '#94a3b8' }}>
           Already have an account?{' '}
           <button
             onClick={() => navigate('/login')}
             style={{
               background: 'none', border: 'none', padding: 0,
               color: '#818cf8', fontWeight: 600, cursor: 'pointer',
-              textDecoration: 'underline',
+              textDecoration: 'underline', fontSize: '0.9rem',
             }}
           >
             Sign In

@@ -6,8 +6,8 @@ const Dashboard = () => {
 
   return (
     <div style={{
-      minHeight: 'calc(100vh - 64px)',
-      padding: '40px 24px 60px',
+      minHeight: 'calc(100vh - 60px)',
+      padding: '32px 16px 60px',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -16,16 +16,16 @@ const Dashboard = () => {
     }}>
       {/* Background Decorative Blur Orbs */}
       <div style={{
-        position: 'absolute', top: '10%', left: '15%',
-        width: 380, height: 380,
+        position: 'absolute', top: '10%', left: '10%',
+        width: 'clamp(180px, 35vw, 380px)', height: 'clamp(180px, 35vw, 380px)',
         background: 'rgba(99, 102, 241, 0.22)',
-        borderRadius: '50%', filter: 'blur(110px)', pointerEvents: 'none',
+        borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none',
       }} />
       <div style={{
-        position: 'absolute', bottom: '15%', right: '15%',
-        width: 360, height: 360,
+        position: 'absolute', bottom: '10%', right: '10%',
+        width: 'clamp(160px, 30vw, 360px)', height: 'clamp(160px, 30vw, 360px)',
         background: 'rgba(168, 85, 247, 0.18)',
-        borderRadius: '50%', filter: 'blur(110px)', pointerEvents: 'none',
+        borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none',
       }} />
 
       {/* Main Glassmorphic Container */}
@@ -33,8 +33,8 @@ const Dashboard = () => {
         position: 'relative',
         width: '100%',
         maxWidth: 960,
-        padding: '52px 40px 48px',
-        borderRadius: 28,
+        padding: 'clamp(24px, 5vw, 52px) clamp(16px, 4vw, 40px) clamp(28px, 5vw, 48px)',
+        borderRadius: 'clamp(16px, 3vw, 28px)',
         background: 'rgba(255, 255, 255, 0.04)',
         backdropFilter: 'blur(20px)',
         border: '1px solid rgba(255, 255, 255, 0.12)',
@@ -48,8 +48,8 @@ const Dashboard = () => {
           padding: '6px 16px', borderRadius: 999,
           background: 'rgba(99, 102, 241, 0.18)',
           border: '1px solid rgba(99, 102, 241, 0.35)',
-          color: '#a5b4fc', fontSize: '0.82rem', fontWeight: 600,
-          letterSpacing: '1px', textTransform: 'uppercase',
+          color: '#a5b4fc', fontSize: 'clamp(0.7rem, 2vw, 0.82rem)', fontWeight: 600,
+          letterSpacing: '0.5px', textTransform: 'uppercase',
           marginBottom: 20,
         }}>
           <span>✨</span> The Peer-to-Peer Learning Network
@@ -57,8 +57,8 @@ const Dashboard = () => {
 
         {/* Heading */}
         <h1 style={{
-          margin: '0 0 16px 0',
-          fontSize: '3rem',
+          margin: '0 0 14px 0',
+          fontSize: 'clamp(1.7rem, 5vw, 3rem)',
           fontWeight: 800,
           letterSpacing: '-1px',
           lineHeight: 1.15,
@@ -72,31 +72,41 @@ const Dashboard = () => {
         {/* Subtitle */}
         <p style={{
           maxWidth: 680,
-          margin: '0 auto 36px',
-          fontSize: '1.05rem',
+          margin: '0 auto 32px',
+          fontSize: 'clamp(0.88rem, 2.5vw, 1.05rem)',
           lineHeight: 1.6,
           color: '#cbd5e1',
           fontWeight: 400,
+          padding: '0 8px',
         }}>
-          Connect, learn, and grow — one skill at a time. Empower yourself by sharing your talents
-          and learning directly through engaging one-on-one exchanges.
+          Connect, learn, and grow — one skill at a time. Empower yourself by sharing
+          your talents and learning directly through engaging one-on-one exchanges.
         </p>
 
         {/* Quick Action CTAs */}
-        <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 48 }}>
+        <div style={{
+          display: 'flex',
+          gap: 12,
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          marginBottom: 40,
+          padding: '0 8px',
+        }}>
           <button
             onClick={() => navigate('/search')}
             style={{
-              padding: '13px 28px',
+              flex: '1 1 160px',
+              maxWidth: 240,
+              padding: 'clamp(11px, 2vw, 13px) clamp(16px, 3vw, 28px)',
               borderRadius: 14,
               background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
               color: '#ffffff',
-              fontSize: '0.98rem',
+              fontSize: 'clamp(0.88rem, 2.5vw, 0.98rem)',
               fontWeight: 700,
               border: 'none',
               cursor: 'pointer',
               boxShadow: '0 4px 20px rgba(99, 102, 241, 0.45)',
-              display: 'flex', alignItems: 'center', gap: 8,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               transition: 'all 0.2s',
             }}
             onMouseEnter={e => {
@@ -114,15 +124,17 @@ const Dashboard = () => {
           <button
             onClick={() => navigate('/profile')}
             style={{
-              padding: '13px 26px',
+              flex: '1 1 160px',
+              maxWidth: 240,
+              padding: 'clamp(11px, 2vw, 13px) clamp(14px, 3vw, 26px)',
               borderRadius: 14,
               background: 'rgba(255, 255, 255, 0.08)',
               border: '1px solid rgba(255, 255, 255, 0.18)',
               color: '#f8fafc',
-              fontSize: '0.98rem',
+              fontSize: 'clamp(0.88rem, 2.5vw, 0.98rem)',
               fontWeight: 600,
               cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: 8,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               transition: 'all 0.2s',
             }}
             onMouseEnter={e => {
@@ -141,8 +153,8 @@ const Dashboard = () => {
         {/* Feature Cards Grid */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-          gap: 24,
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gap: 'clamp(12px, 3vw, 24px)',
           textAlign: 'left',
         }}>
           <FeatureCard
@@ -169,7 +181,7 @@ const Dashboard = () => {
 const FeatureCard = ({ icon, title, description }) => (
   <div
     style={{
-      padding: '28px 24px',
+      padding: 'clamp(18px, 3vw, 28px) clamp(14px, 2.5vw, 24px)',
       borderRadius: 18,
       background: 'rgba(255, 255, 255, 0.04)',
       border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -192,22 +204,18 @@ const FeatureCard = ({ icon, title, description }) => (
     }}
   >
     <div style={{
-      width: 48, height: 48, borderRadius: 14,
+      width: 46, height: 46, borderRadius: 14,
       background: 'rgba(99, 102, 241, 0.15)',
       border: '1px solid rgba(99, 102, 241, 0.3)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontSize: '1.4rem', marginBottom: 16,
+      fontSize: '1.3rem', marginBottom: 14,
     }}>
       {icon}
     </div>
-    <h3 style={{
-      margin: '0 0 8px 0', fontSize: '1.2rem', fontWeight: 700, color: '#f8fafc',
-    }}>
+    <h3 style={{ margin: '0 0 8px 0', fontSize: 'clamp(1rem, 2.5vw, 1.2rem)', fontWeight: 700, color: '#f8fafc' }}>
       {title}
     </h3>
-    <p style={{
-      margin: 0, fontSize: '0.9rem', lineHeight: 1.5, color: '#94a3b8',
-    }}>
+    <p style={{ margin: 0, fontSize: 'clamp(0.82rem, 2vw, 0.9rem)', lineHeight: 1.5, color: '#94a3b8' }}>
       {description}
     </p>
   </div>

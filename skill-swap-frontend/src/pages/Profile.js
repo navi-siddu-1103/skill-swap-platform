@@ -22,10 +22,7 @@ const Profile = () => {
   const handleSkillAdd = async (e) => {
     e.preventDefault();
     setError('');
-    if (!newSkill.name.trim()) {
-      setError('Skill name is required');
-      return;
-    }
+    if (!newSkill.name.trim()) { setError('Skill name is required'); return; }
     setLoading(true);
     try {
       const res = await api.post('/skills/add', {
@@ -43,8 +40,8 @@ const Profile = () => {
 
   return (
     <div style={{
-      minHeight: 'calc(100vh - 64px)',
-      padding: '40px 24px 60px',
+      minHeight: 'calc(100vh - 60px)',
+      padding: 'clamp(20px, 4vw, 40px) clamp(12px, 4vw, 24px) 60px',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'flex-start',
@@ -53,9 +50,9 @@ const Profile = () => {
       {/* Background Glow */}
       <div style={{
         position: 'absolute', top: '15%', left: '25%',
-        width: 360, height: 360,
+        width: 'clamp(150px, 28vw, 360px)', height: 'clamp(150px, 28vw, 360px)',
         background: 'rgba(99, 102, 241, 0.2)',
-        borderRadius: '50%', filter: 'blur(100px)', pointerEvents: 'none',
+        borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none',
       }} />
 
       {/* Main Glass Card */}
@@ -63,8 +60,8 @@ const Profile = () => {
         position: 'relative',
         width: '100%',
         maxWidth: 720,
-        padding: '40px 36px',
-        borderRadius: 24,
+        padding: 'clamp(22px, 5vw, 40px) clamp(16px, 4vw, 36px)',
+        borderRadius: 'clamp(16px, 3vw, 24px)',
         background: 'rgba(255, 255, 255, 0.05)',
         backdropFilter: 'blur(20px)',
         border: '1px solid rgba(255, 255, 255, 0.12)',
@@ -76,26 +73,29 @@ const Profile = () => {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: 32,
-          paddingBottom: 24,
+          marginBottom: 28,
+          paddingBottom: 20,
           borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          flexWrap: 'wrap',
+          gap: 14,
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            {/* Avatar with Glow */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            {/* Avatar */}
             <div style={{
-              width: 56, height: 56, borderRadius: '50%',
+              width: 52, height: 52, borderRadius: '50%',
               background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
-              boxShadow: '0 0 20px rgba(99, 102, 241, 0.5)',
+              boxShadow: '0 0 18px rgba(99, 102, 241, 0.5)',
               border: '2px solid rgba(255, 255, 255, 0.25)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontWeight: 800, fontSize: '1.4rem', color: '#fff',
+              fontWeight: 800, fontSize: '1.3rem', color: '#fff',
+              flexShrink: 0,
             }}>
               {user.username?.charAt(0).toUpperCase()}
             </div>
             <div>
               <h2 style={{
                 margin: '0 0 4px 0',
-                fontSize: '1.8rem',
+                fontSize: 'clamp(1.3rem, 4vw, 1.8rem)',
                 fontWeight: 800,
                 background: 'linear-gradient(135deg, #ffffff 40%, #c7d2fe 100%)',
                 WebkitBackgroundClip: 'text',
@@ -111,20 +111,19 @@ const Profile = () => {
 
           <button
             type="button"
-            onClick={() => {
-              logout();
-              navigate('/login');
-            }}
+            onClick={() => { logout(); navigate('/login'); }}
             style={{
               background: 'rgba(239, 68, 68, 0.15)',
               border: '1px solid rgba(239, 68, 68, 0.35)',
               color: '#fca5a5',
-              padding: '8px 18px',
+              padding: '9px 18px',
               borderRadius: 10,
               fontWeight: 600,
               fontSize: '0.88rem',
               cursor: 'pointer',
               transition: 'all 0.2s',
+              minHeight: 44,
+              whiteSpace: 'nowrap',
             }}
             onMouseEnter={e => {
               e.currentTarget.style.background = 'rgba(239, 68, 68, 0.25)';
@@ -141,23 +140,17 @@ const Profile = () => {
 
         {/* Skills Section */}
         <h3 style={{
-          margin: '0 0 16px 0',
-          fontSize: '1.25rem',
-          fontWeight: 700,
-          color: '#e2e8f0',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
+          margin: '0 0 14px 0', fontSize: 'clamp(1rem, 3vw, 1.25rem)',
+          fontWeight: 700, color: '#e2e8f0',
+          display: 'flex', alignItems: 'center', gap: 8,
         }}>
           <span>⚡</span> My Skills
         </h3>
 
         {loading ? (
-          <p style={{ color: '#818cf8', fontSize: '0.9rem', marginBottom: 20 }}>
-            Loading skills…
-          </p>
+          <p style={{ color: '#818cf8', fontSize: '0.9rem', marginBottom: 20 }}>Loading skills…</p>
         ) : (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 28 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 24 }}>
             {skills.length > 0 ? (
               skills.map(skill => {
                 const isTeach = skill.type === 'teach';
@@ -165,23 +158,19 @@ const Profile = () => {
                   <span
                     key={skill.id}
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 6,
-                      padding: '7px 16px',
-                      borderRadius: 999,
-                      fontSize: '0.88rem',
-                      fontWeight: 600,
+                      display: 'inline-flex', alignItems: 'center', gap: 5,
+                      padding: '7px 14px', borderRadius: 999,
+                      fontSize: 'clamp(0.78rem, 2vw, 0.88rem)', fontWeight: 600,
                       background: isTeach
-                        ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.3) 100%)'
-                        : 'linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.3) 100%)',
+                        ? 'linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(5,150,105,0.3) 100%)'
+                        : 'linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(217,119,6,0.3) 100%)',
                       border: isTeach
-                        ? '1px solid rgba(52, 211, 153, 0.45)'
-                        : '1px solid rgba(251, 191, 36, 0.45)',
+                        ? '1px solid rgba(52,211,153,0.45)'
+                        : '1px solid rgba(251,191,36,0.45)',
                       color: isTeach ? '#6ee7b7' : '#fde047',
                       boxShadow: isTeach
-                        ? '0 0 14px rgba(16, 185, 129, 0.25)'
-                        : '0 0 14px rgba(245, 158, 11, 0.25)',
+                        ? '0 0 12px rgba(16,185,129,0.2)'
+                        : '0 0 12px rgba(245,158,11,0.2)',
                       transition: 'transform 0.15s ease',
                       cursor: 'default',
                     }}
@@ -189,19 +178,14 @@ const Profile = () => {
                     onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
                   >
                     <span>{skill.name}</span>
-                    <span style={{
-                      fontSize: '0.72rem',
-                      opacity: 0.85,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                    }}>
+                    <span style={{ fontSize: '0.7rem', opacity: 0.85, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                       ({isTeach ? 'Teach' : 'Learn'})
                     </span>
                   </span>
                 );
               })
             ) : (
-              <p style={{ color: '#94a3b8', fontStyle: 'italic', fontSize: '0.9rem', margin: '0 0 16px 0' }}>
+              <p style={{ color: '#94a3b8', fontStyle: 'italic', fontSize: '0.9rem', margin: '0 0 8px 0' }}>
                 You haven't listed any skills yet. Add some below!
               </p>
             )}
@@ -210,13 +194,13 @@ const Profile = () => {
 
         {/* Add Skill Form */}
         <div style={{
-          padding: '24px',
+          padding: 'clamp(16px, 3vw, 24px)',
           borderRadius: 18,
           background: 'rgba(255, 255, 255, 0.03)',
           border: '1px solid rgba(255, 255, 255, 0.09)',
           marginBottom: 24,
         }}>
-          <h4 style={{ margin: '0 0 14px 0', fontSize: '1rem', fontWeight: 600, color: '#c7d2fe' }}>
+          <h4 style={{ margin: '0 0 14px 0', fontSize: '0.95rem', fontWeight: 600, color: '#c7d2fe' }}>
             Add a New Skill
           </h4>
           <form onSubmit={handleSkillAdd} style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -228,14 +212,15 @@ const Profile = () => {
               disabled={loading}
               required
               style={{
-                flex: '1 1 200px',
+                flex: '1 1 140px',
                 padding: '11px 16px',
                 borderRadius: 12,
                 background: 'rgba(255, 255, 255, 0.07)',
                 border: '1px solid rgba(255, 255, 255, 0.16)',
                 color: '#ffffff',
-                fontSize: '0.95rem',
+                fontSize: '1rem',
                 outline: 'none',
+                minHeight: 46,
               }}
               onFocus={e => {
                 e.target.style.borderColor = '#818cf8';
@@ -256,9 +241,10 @@ const Profile = () => {
                 background: '#1e1b4b',
                 border: '1px solid rgba(255, 255, 255, 0.18)',
                 color: '#ffffff',
-                fontSize: '0.95rem',
+                fontSize: '1rem',
                 outline: 'none',
                 cursor: 'pointer',
+                minHeight: 46,
               }}
             >
               <option value="teach" style={{ background: '#1e1b4b', color: '#fff' }}>Can Teach</option>
@@ -268,7 +254,8 @@ const Profile = () => {
               type="submit"
               disabled={loading}
               style={{
-                padding: '11px 24px',
+                flex: '1 1 100px',
+                padding: '11px 20px',
                 borderRadius: 12,
                 background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
                 color: '#ffffff',
@@ -278,10 +265,11 @@ const Profile = () => {
                 cursor: loading ? 'default' : 'pointer',
                 boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)',
                 transition: 'all 0.2s',
+                minHeight: 46,
               }}
               onMouseEnter={e => {
                 if (!loading) {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
                   e.currentTarget.style.boxShadow = '0 6px 20px rgba(99, 102, 241, 0.6)';
                 }
               }}
@@ -301,21 +289,15 @@ const Profile = () => {
           type="button"
           onClick={() => navigate('/dashboard')}
           style={{
-            background: 'none',
-            border: 'none',
-            padding: 0,
-            color: '#a5b4fc',
-            fontSize: '0.92rem',
-            fontWeight: 600,
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
+            background: 'none', border: 'none', padding: 0,
+            color: '#a5b4fc', fontSize: '0.92rem', fontWeight: 600,
+            cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6,
+            minHeight: 44,
           }}
           onMouseEnter={e => e.currentTarget.style.color = '#ffffff'}
           onMouseLeave={e => e.currentTarget.style.color = '#a5b4fc'}
         >
-          &larr; Back to Dashboard
+          ← Back to Dashboard
         </button>
       </div>
     </div>

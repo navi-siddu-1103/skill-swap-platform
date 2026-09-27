@@ -34,28 +34,42 @@ const Login = () => {
     }
   };
 
+  const inputStyle = {
+    width: '100%',
+    padding: '13px 16px',
+    borderRadius: 12,
+    background: 'rgba(255, 255, 255, 0.07)',
+    border: '1px solid rgba(255, 255, 255, 0.16)',
+    color: '#ffffff',
+    fontSize: '1rem',
+    outline: 'none',
+    boxSizing: 'border-box',
+    transition: 'all 0.2s',
+    minHeight: 50,
+  };
+
   return (
     <div style={{
       minHeight: '100vh',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '24px',
+      padding: 'clamp(16px, 5vw, 32px)',
       position: 'relative',
       overflow: 'hidden',
     }}>
       {/* Background Glow Orbs */}
       <div style={{
         position: 'absolute', top: '15%', left: '20%',
-        width: 360, height: 360,
+        width: 'clamp(160px, 30vw, 360px)', height: 'clamp(160px, 30vw, 360px)',
         background: 'rgba(99, 102, 241, 0.25)',
-        borderRadius: '50%', filter: 'blur(100px)', pointerEvents: 'none',
+        borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none',
       }} />
       <div style={{
         position: 'absolute', bottom: '15%', right: '20%',
-        width: 340, height: 340,
+        width: 'clamp(140px, 28vw, 340px)', height: 'clamp(140px, 28vw, 340px)',
         background: 'rgba(168, 85, 247, 0.2)',
-        borderRadius: '50%', filter: 'blur(100px)', pointerEvents: 'none',
+        borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none',
       }} />
 
       {/* Glass Card */}
@@ -63,8 +77,8 @@ const Login = () => {
         position: 'relative',
         width: '100%',
         maxWidth: 440,
-        padding: '44px 36px',
-        borderRadius: 24,
+        padding: 'clamp(28px, 6vw, 44px) clamp(20px, 5vw, 36px)',
+        borderRadius: 'clamp(16px, 4vw, 24px)',
         background: 'rgba(255, 255, 255, 0.05)',
         backdropFilter: 'blur(20px)',
         border: '1px solid rgba(255, 255, 255, 0.12)',
@@ -72,9 +86,9 @@ const Login = () => {
         color: '#f8fafc',
       }}>
         {/* Header with Icon */}
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+        <div style={{ textAlign: 'center', marginBottom: 28 }}>
           <div style={{
-            width: 60, height: 60, borderRadius: '50%', margin: '0 auto 16px',
+            width: 60, height: 60, borderRadius: '50%', margin: '0 auto 14px',
             background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             boxShadow: '0 0 25px rgba(99, 102, 241, 0.65)',
@@ -90,7 +104,7 @@ const Login = () => {
           </div>
           <h2 style={{
             margin: '0 0 6px 0',
-            fontSize: '2rem',
+            fontSize: 'clamp(1.6rem, 5vw, 2rem)',
             fontWeight: 800,
             letterSpacing: '-0.5px',
             background: 'linear-gradient(135deg, #ffffff 40%, #c7d2fe 100%)',
@@ -105,7 +119,7 @@ const Login = () => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div>
             <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: '#c7d2fe', marginBottom: 6 }}>
               Username
@@ -118,18 +132,7 @@ const Login = () => {
               onChange={handleChange}
               required
               autoFocus
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: 12,
-                background: 'rgba(255, 255, 255, 0.07)',
-                border: '1px solid rgba(255, 255, 255, 0.16)',
-                color: '#ffffff',
-                fontSize: '0.95rem',
-                outline: 'none',
-                boxSizing: 'border-box',
-                transition: 'all 0.2s',
-              }}
+              style={inputStyle}
               onFocus={e => {
                 e.target.style.borderColor = '#818cf8';
                 e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.35)';
@@ -152,18 +155,7 @@ const Login = () => {
               value={form.password}
               onChange={handleChange}
               required
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: 12,
-                background: 'rgba(255, 255, 255, 0.07)',
-                border: '1px solid rgba(255, 255, 255, 0.16)',
-                color: '#ffffff',
-                fontSize: '0.95rem',
-                outline: 'none',
-                boxSizing: 'border-box',
-                transition: 'all 0.2s',
-              }}
+              style={inputStyle}
               onFocus={e => {
                 e.target.style.borderColor = '#818cf8';
                 e.target.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.35)';
@@ -182,7 +174,7 @@ const Login = () => {
               background: 'rgba(239, 68, 68, 0.15)',
               border: '1px solid rgba(239, 68, 68, 0.35)',
               color: '#fca5a5',
-              fontSize: '0.85rem',
+              fontSize: '0.88rem',
               textAlign: 'center',
             }}>
               {error}
@@ -193,8 +185,8 @@ const Login = () => {
             type="submit"
             disabled={loading}
             style={{
-              marginTop: 6,
-              padding: '13px',
+              marginTop: 4,
+              padding: '14px',
               borderRadius: 12,
               background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
               color: '#ffffff',
@@ -205,6 +197,7 @@ const Login = () => {
               opacity: loading ? 0.7 : 1,
               boxShadow: '0 4px 20px rgba(99, 102, 241, 0.45)',
               transition: 'all 0.2s',
+              minHeight: 50,
             }}
             onMouseEnter={e => {
               if (!loading) {
@@ -222,14 +215,14 @@ const Login = () => {
         </form>
 
         {/* Footer */}
-        <p style={{ marginTop: 24, textAlign: 'center', fontSize: '0.88rem', color: '#94a3b8' }}>
+        <p style={{ marginTop: 22, textAlign: 'center', fontSize: '0.9rem', color: '#94a3b8' }}>
           Don't have an account?{' '}
           <button
             onClick={() => navigate('/register')}
             style={{
               background: 'none', border: 'none', padding: 0,
               color: '#818cf8', fontWeight: 600, cursor: 'pointer',
-              textDecoration: 'underline',
+              textDecoration: 'underline', fontSize: '0.9rem',
             }}
           >
             Register

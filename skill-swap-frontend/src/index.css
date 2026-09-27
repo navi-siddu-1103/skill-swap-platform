@@ -16,12 +16,19 @@ html, body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent horizontal scroll on mobile */
+  overflow-x: hidden;
+}
+
+/* Ensure all elements respect box-sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 /* Custom sleek scrollbar matching theme */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: rgba(15, 23, 42, 0.6);
@@ -43,4 +50,27 @@ html, body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* ── Responsive Typography ── */
+@media (max-width: 480px) {
+  html { font-size: 15px; }
+}
+
+/* ── Touch-Friendly Minimum Tap Target ── */
+button, a, select, input[type="submit"] {
+  min-height: 44px;
+}
+
+/* ── Input resets for mobile ── */
+input, select, textarea {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* ── Prevent zoom on input focus on iOS ── */
+@media (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
 }

@@ -133,8 +133,8 @@ const SkillSearch = () => {
 
   return (
     <div style={{
-      minHeight: 'calc(100vh - 64px)',
-      padding: '40px 24px 60px',
+      minHeight: 'calc(100vh - 60px)',
+      padding: 'clamp(20px, 4vw, 40px) clamp(12px, 4vw, 24px) 60px',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -142,16 +142,16 @@ const SkillSearch = () => {
     }}>
       {/* Background Glow Orbs */}
       <div style={{
-        position: 'absolute', top: '15%', left: '20%',
-        width: 380, height: 380,
+        position: 'absolute', top: '15%', left: '10%',
+        width: 'clamp(150px, 28vw, 380px)', height: 'clamp(150px, 28vw, 380px)',
         background: 'rgba(99, 102, 241, 0.22)',
-        borderRadius: '50%', filter: 'blur(100px)', pointerEvents: 'none',
+        borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none',
       }} />
       <div style={{
-        position: 'absolute', bottom: '15%', right: '20%',
-        width: 360, height: 360,
+        position: 'absolute', bottom: '15%', right: '10%',
+        width: 'clamp(130px, 25vw, 360px)', height: 'clamp(130px, 25vw, 360px)',
         background: 'rgba(168, 85, 247, 0.18)',
-        borderRadius: '50%', filter: 'blur(100px)', pointerEvents: 'none',
+        borderRadius: '50%', filter: 'blur(80px)', pointerEvents: 'none',
       }} />
 
       {/* Main Glass Card */}
@@ -159,18 +159,18 @@ const SkillSearch = () => {
         position: 'relative',
         width: '100%',
         maxWidth: 820,
-        padding: '36px 32px',
-        borderRadius: 24,
+        padding: 'clamp(20px, 4vw, 36px) clamp(14px, 4vw, 32px)',
+        borderRadius: 'clamp(16px, 3vw, 24px)',
         background: 'rgba(255, 255, 255, 0.05)',
         backdropFilter: 'blur(20px)',
         border: '1px solid rgba(255, 255, 255, 0.12)',
         boxShadow: '0 25px 60px rgba(0, 0, 0, 0.45)',
         color: '#f8fafc',
       }}>
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+        <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <h2 style={{
             margin: '0 0 6px 0',
-            fontSize: '2.1rem',
+            fontSize: 'clamp(1.4rem, 4vw, 2.1rem)',
             fontWeight: 800,
             letterSpacing: '-0.5px',
             background: 'linear-gradient(135deg, #ffffff 40%, #c7d2fe 100%)',
@@ -179,27 +179,28 @@ const SkillSearch = () => {
           }}>
             Explore Community & Find Partners
           </h2>
-          <p style={{ margin: 0, fontSize: '0.92rem', color: '#94a3b8' }}>
+          <p style={{ margin: 0, fontSize: 'clamp(0.82rem, 2.5vw, 0.92rem)', color: '#94a3b8' }}>
             Search by skill, discover what peers can teach or learn, and propose a swap.
           </p>
         </div>
 
         {/* Search Bar Form */}
-        <form onSubmit={handleSearch} style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 20 }}>
+        <form onSubmit={handleSearch} style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 20 }}>
           <input
             name="skill"
             value={search.skill}
             onChange={handleChange}
-            placeholder="Search skill (e.g. Java, Python, React, RAG)"
+            placeholder="Search skill (e.g. Java, Python, React)"
             style={{
-              flex: '1 1 240px',
+              flex: '1 1 180px',
               padding: '12px 16px',
               borderRadius: 12,
               background: 'rgba(255, 255, 255, 0.07)',
               border: '1px solid rgba(255, 255, 255, 0.16)',
               color: '#ffffff',
-              fontSize: '0.95rem',
+              fontSize: '1rem',
               outline: 'none',
+              minHeight: 48,
             }}
             onFocus={e => {
               e.target.style.borderColor = '#818cf8';
@@ -216,26 +217,29 @@ const SkillSearch = () => {
             value={search.type}
             onChange={handleChange}
             style={{
+              flex: '1 1 140px',
               padding: '12px 14px',
               borderRadius: 12,
               background: '#1e1b4b',
               border: '1px solid rgba(255, 255, 255, 0.18)',
               color: '#ffffff',
-              fontSize: '0.95rem',
+              fontSize: '1rem',
               outline: 'none',
               cursor: 'pointer',
+              minHeight: 48,
             }}
           >
             <option value="all" style={{ background: '#1e1b4b', color: '#fff' }}>Any (Teach or Learn)</option>
-            <option value="teach" style={{ background: '#1e1b4b', color: '#fff' }}>Partners who Can Teach</option>
-            <option value="learn" style={{ background: '#1e1b4b', color: '#fff' }}>Partners who Want to Learn</option>
+            <option value="teach" style={{ background: '#1e1b4b', color: '#fff' }}>Can Teach</option>
+            <option value="learn" style={{ background: '#1e1b4b', color: '#fff' }}>Want to Learn</option>
           </select>
 
           <button
             type="submit"
             disabled={searching}
             style={{
-              padding: '12px 24px',
+              flex: '1 1 90px',
+              padding: '12px 20px',
               borderRadius: 12,
               background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
               color: '#ffffff',
@@ -245,6 +249,7 @@ const SkillSearch = () => {
               cursor: searching ? 'default' : 'pointer',
               boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)',
               transition: 'all 0.2s',
+              minHeight: 48,
             }}
             onMouseEnter={e => {
               if (!searching) {
@@ -264,7 +269,8 @@ const SkillSearch = () => {
             type="button"
             onClick={handleBrowseAll}
             style={{
-              padding: '12px 18px',
+              flex: '1 1 90px',
+              padding: '12px 16px',
               borderRadius: 12,
               background: 'rgba(255, 255, 255, 0.08)',
               border: '1px solid rgba(255, 255, 255, 0.18)',
@@ -273,6 +279,7 @@ const SkillSearch = () => {
               fontWeight: 600,
               cursor: 'pointer',
               transition: 'all 0.2s',
+              minHeight: 48,
             }}
             onMouseEnter={e => {
               e.currentTarget.style.background = 'rgba(255, 255, 255, 0.14)';
