@@ -50,6 +50,16 @@ public class DatabaseConfig {
         String activeProfile = System.getenv("SPRING_PROFILES_ACTIVE");
         boolean isProd = "prod".equalsIgnoreCase(activeProfile);
 
+        // Auto-fix missing jdbc: prefix if URL was pasted without it
+        if (url != null) {
+            url = url.trim();
+            if (url.startsWith("mysql://")) {
+                url = "jdbc:" + url;
+            } else if (url.startsWith("postgresql://")) {
+                url = "jdbc:" + url;
+            }
+        }
+
         // If URL is missing, blank, or pointing to unreachable localhost in production:
         if (url == null || url.trim().isEmpty() || (isProd && url.contains("localhost:3306"))) {
             log.info("No remote MySQL URL configured for production. Falling back to embedded H2 database.");
