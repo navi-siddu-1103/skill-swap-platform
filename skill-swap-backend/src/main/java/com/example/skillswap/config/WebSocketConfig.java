@@ -1,6 +1,7 @@
 package com.example.skillswap.config;
 
 import com.example.skillswap.model.UserPrincipal;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -12,9 +13,21 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.web.socket.config.annotation.*;
 
+import java.util.Arrays;
+
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    @Value("${frontend.allowed-origins:http://localhost:3000,https://*.vercel.app}")
+    private String allowedOrigins;
+
+    private String[] resolveAllowedOrigins() {
+        return Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isEmpty())
+                .toArray(String[]::new);
+    }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -29,7 +42,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*")
+                .setAllowedOriginPatterns(resolveAllowedOrigins())
                 .withSockJS(); // SockJS fallback for browsers that don't support native WS
     }
 

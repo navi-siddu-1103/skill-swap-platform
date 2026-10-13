@@ -47,7 +47,7 @@ A full-stack peer-to-peer skill exchange platform where users teach what they kn
 ### Backend
 | Technology | Version | Purpose |
 |-----------|---------|---------|
-| Java | 25 | Language |
+| Java | 21 | Language |
 | Spring Boot | 3.5 | Application framework |
 | Spring WebSocket | 3.5 | Real-time STOMP messaging |
 | Spring Security | 3.5 | Auth & password encoding |
@@ -119,7 +119,7 @@ skill-swap-platform/
 ## 🛠️ Local Setup
 
 ### Prerequisites
-- Java 17+ (project uses Java 25)
+- Java 21+
 - Node.js 18+ and npm
 - MySQL 8.0 running locally
 
@@ -263,6 +263,31 @@ const api = axios.create({
 
 ---
 
+### 🤖 GitHub Auto-Deployment (Added)
+
+This repository now includes `.github/workflows/deploy.yml` to automate deployment from GitHub.
+
+- On push to `main`/`master` (or manual trigger), GitHub Actions:
+  1. Builds frontend (`npm run build`)
+  2. Runs backend tests (`./mvnw test`)
+  3. Triggers backend deploy via Render deploy hook
+  4. Triggers frontend deploy via Vercel deploy hook
+
+Configure these repository **Secrets** in GitHub:
+
+```text
+RENDER_DEPLOY_HOOK_URL=<your render deploy hook url>
+VERCEL_DEPLOY_HOOK_URL=<your vercel deploy hook url>
+```
+
+For production CORS/WebSocket origin allowlist, set:
+
+```text
+FRONTEND_ALLOWED_ORIGINS=https://your-frontend.vercel.app,https://*.vercel.app
+```
+
+---
+
 ### 🔁 Alternative Deployment Options
 
 | Service | Frontend | Backend | Database | Free Tier |
@@ -279,7 +304,7 @@ const api = axios.create({
 ### 🔧 Production Checklist Before Deploying
 
 - [ ] Move `spring.datasource.password` to environment variables (never hardcode)
-- [ ] Update `WebConfig.java` CORS `allowedOrigins` to your Vercel frontend URL
+- [ ] Set `FRONTEND_ALLOWED_ORIGINS` with your deployed frontend domain(s)
 - [ ] Update `src/api/axios.js` baseURL to your Railway backend URL
 - [ ] Update `ChatWindow.js` SockJS URL to your Railway backend URL
 - [ ] Set `spring.jpa.hibernate.ddl-auto=validate` (not `update`) in production
