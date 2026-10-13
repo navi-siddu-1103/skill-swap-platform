@@ -47,7 +47,7 @@ A full-stack peer-to-peer skill exchange platform where users teach what they kn
 ### Backend
 | Technology | Version | Purpose |
 |-----------|---------|---------|
-| Java | 21 | Language |
+| Java | 17 | Language |
 | Spring Boot | 3.5 | Application framework |
 | Spring WebSocket | 3.5 | Real-time STOMP messaging |
 | Spring Security | 3.5 | Auth & password encoding |
@@ -119,7 +119,7 @@ skill-swap-platform/
 ## 🛠️ Local Setup
 
 ### Prerequisites
-- Java 21+
+- Java 17+
 - Node.js 18+ and npm
 - MySQL 8.0 running locally
 

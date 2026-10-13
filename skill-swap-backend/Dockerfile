@@ -1,5 +1,5 @@
 # ── Stage 1: Build the Spring Boot Application ────────────────
-FROM eclipse-temurin:21-jdk AS build
+FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
 
 # Copy Maven wrapper and POM
@@ -17,7 +17,7 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests
 
 # ── Stage 2: Lightweight Runtime ──────────────────────────────
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 # Create directory for embedded data if H2 fallback is used
