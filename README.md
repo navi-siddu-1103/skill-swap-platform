@@ -1,310 +1,211 @@
-# 🔄 Skill Swap Platform
+# Skill Swap Platform
 
 <div align="center">
 
-![Skill Swap](https://img.shields.io/badge/Skill_Swap-Platform-6366f1?style=for-the-badge)
-![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F?style=for-the-badge&logo=springboot)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql)
-![WebSocket](https://img.shields.io/badge/WebSocket-STOMP-green?style=for-the-badge)
+![Skill Swap Platform](https://img.shields.io/badge/Skill%20Swap-Platform-6366f1?style=for-the-badge)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=20232A)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![Java](https://img.shields.io/badge/Java-25-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 
-**Connect, learn, and grow — one skill at a time.**  
-A full-stack peer-to-peer skill exchange platform where users teach what they know and learn what they don't.
+**Connect, learn, and grow—one skill at a time.**
 
-[🚀 Live Demo](#deployment) · [📋 Features](#-features) · [🛠️ Setup](#-local-setup) · [📡 API Docs](#-api-endpoints)
+A full-stack peer-to-peer platform for discovering people, exchanging skills, managing swap requests, and communicating through real-time chat.
+
+[Features](#features) · [Technology stack](#technology-stack) · [Local development](#local-development) · [API overview](#api-overview) · [Deployment](#deployment)
 
 </div>
 
----
+## Features
 
-## ✨ Features
+- **Account management:** Register and sign in with BCrypt-protected passwords.
+- **Skill profiles:** Add skills as either skills to teach or skills to learn.
+- **Partner discovery:** Search for users by skill and skill type.
+- **Skill swap requests:** Send, review, and update swap requests.
+- **Real-time chat:** Exchange messages through STOMP over WebSocket with SockJS fallback.
+- **Conversation management:** View chat history, contacts, conversations, and unread-message counts.
+- **Responsive interface:** React-based pages for authentication, dashboards, profiles, search, swaps, and chat.
 
-| Feature | Status | Description |
-|---------|--------|-------------|
-| 🔐 Auth (Register / Login) | ✅ Live | BCrypt password hashing, localStorage session |
-| 👤 Profile & Skill Management | ✅ Live | Add/remove skills tagged as Teach or Learn |
-| 🔍 Find Partners | ✅ Live | Search users by skill and type |
-| 🤝 Swap Requests | ✅ Live | Send, accept, reject skill exchange proposals |
-| 💬 Live Chat | ✅ Live | Real-time STOMP/WebSocket messaging with inbox |
-| 🔍 Discover Community | 🔜 Planned | Browse rich community profile cards |
-| 📅 Schedule Sessions | 🔜 Planned | Calendar-based session scheduling |
-| 🎥 Secure Video Calls | 🔜 Planned | WebRTC / Jitsi video exchanges |
-
----
-
-## 🏗️ Tech Stack
+## Technology stack
 
 ### Frontend
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| React | 19 | UI framework |
-| React Router | v7 | Client-side routing |
-| Axios | 1.x | HTTP API client |
-| @stomp/stompjs | latest | WebSocket STOMP client |
-| SockJS-client | latest | WebSocket transport fallback |
-| Tailwind CSS | 3.x | Utility-first styling |
+
+| Technology | Version | Role |
+| --- | --- | --- |
+| React | 19.1 | User interface |
+| React DOM | 19.1 | Browser rendering |
+| React Router DOM | 7.7 | Client-side routing |
+| Create React App | 5.0 | Development and production build tooling |
+| Axios | 1.11 | REST API communication |
+| `@stomp/stompjs` | 7.3 | STOMP client for real-time messaging |
+| SockJS Client | 1.6 | WebSocket transport fallback |
+| Tailwind CSS | 3.4 | Utility-first styling |
+| Testing Library | 16.x | React component testing |
 
 ### Backend
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| Java | 25 | Language |
-| Spring Boot | 3.5 | Application framework |
-| Spring WebSocket | 3.5 | Real-time STOMP messaging |
-| Spring Security | 3.5 | Auth & password encoding |
-| Spring Data JPA | 3.5 | ORM / database access |
-| Hibernate | 6.x | JPA implementation |
-| MySQL | 8.0 | Primary database |
-| Lombok | 1.18 | Boilerplate reduction |
 
----
+| Technology | Version | Role |
+| --- | --- | --- |
+| Java | 25 | Application language |
+| Spring Boot | 3.5.14 | Backend framework |
+| Spring Web | 3.5.14 | REST API |
+| Spring Data JPA | 3.5.14 | Persistence and repository abstraction |
+| Hibernate | Managed by Spring Boot | ORM implementation |
+| Spring Security | 3.5.14 | Security configuration and password encoding |
+| Spring WebSocket | 3.5.14 | STOMP-based real-time messaging |
+| MySQL Connector/J | Managed by Spring Boot | MySQL connectivity |
+| PostgreSQL Driver | Managed by Spring Boot | Cloud database compatibility |
+| H2 Database | Managed by Spring Boot | Development and fallback runtime database |
+| Lombok | 1.18.32 | Boilerplate reduction |
+| Maven Wrapper | Included | Reproducible backend builds |
 
-## 📁 Project Structure
+## Project structure
 
-```
+```text
 skill-swap-platform/
-├── skill-swap-frontend/          # React application
+├── skill-swap-frontend/       # React single-page application
 │   ├── public/
 │   └── src/
-│       ├── api/
-│       │   └── axios.js          # Axios base config → localhost:9091
-│       ├── components/
-│       │   └── ChatWindow.js     # Floating real-time chat component
-│       ├── context/
-│       │   └── AuthContext.js    # Global auth state
-│       ├── pages/
-│       │   ├── Login.js
-│       │   ├── Register.js
-│       │   ├── Dashboard.js
-│       │   ├── Profile.js
-│       │   ├── SkillSearch.js    # Find Partners + Chat button
-│       │   ├── MySwaps.js
-│       │   └── UserProfile.js
-│       └── App.js                # Routes + Navbar + Inbox popup
-│
-├── skill-swap-backend/           # Spring Boot application
-│   └── src/main/java/com/example/skillswap/
-│       ├── config/
-│       │   ├── SecurityConfig.java
-│       │   ├── WebConfig.java    # CORS config
-│       │   └── WebSocketConfig.java  # STOMP + SockJS setup
-│       ├── controller/
-│       │   ├── AuthController.java
-│       │   ├── ChatController.java   # WebSocket + chat REST APIs
-│       │   ├── SearchController.java
-│       │   ├── SkillController.java
-│       │   └── SkillSwapController.java
-│       ├── model/
-│       │   ├── User.java
-│       │   ├── Skill.java
-│       │   ├── SkillSwapRequest.java
-│       │   ├── ChatMessage.java  # chat_messages table
-│       │   └── UserPrincipal.java
-│       ├── repository/
-│       │   ├── UserRepository.java
-│       │   ├── SkillRepository.java
-│       │   ├── SkillSwapRequestRepository.java
-│       │   └── ChatMessageRepository.java
-│       └── service/
-│           ├── UserService.java
-│           ├── SkillService.java
-│           ├── SkillSwapService.java
-│           └── ChatService.java  # Conversations, unread count, inbox
-│
-├── .gitignore
+│       ├── api/               # Axios API client
+│       ├── components/        # Shared UI and chat components
+│       ├── context/           # Authentication context
+│       └── pages/             # Application pages
+├── skill-swap-backend/        # Spring Boot application
+│   ├── src/main/java/         # Config, controllers, models, repositories, services
+│   ├── src/main/resources/    # Application and profile configuration
+│   └── pom.xml
+├── render.yaml                # Render deployment configuration
 └── README.md
 ```
 
----
-
-## 🛠️ Local Setup
+## Local development
 
 ### Prerequisites
-- Java 17+ (project uses Java 25)
-- Node.js 18+ and npm
-- MySQL 8.0 running locally
 
-### 1️⃣ Clone the repository
+- Java 25
+- Node.js and npm
+- MySQL 8 for local development
+
+### 1. Clone the repository
+
 ```bash
 git clone https://github.com/navi-siddu-1103/skill-swap-platform.git
 cd skill-swap-platform
 ```
 
-### 2️⃣ Database Setup
+### 2. Create the local database
+
 ```sql
--- Run in MySQL
 CREATE DATABASE skill_swap_db;
 ```
 
-### 3️⃣ Backend Setup
+The backend defaults to:
+
+```text
+jdbc:mysql://localhost:3306/skill_swap_db
+username: root
+port: 9091
+```
+
+Set the database password in `skill-swap-backend/src/main/resources/application.properties` or provide it through the `SPRING_DATASOURCE_PASSWORD` environment variable. Do not commit credentials.
+
+### 3. Start the backend
+
 ```bash
 cd skill-swap-backend
-```
-
-Edit `src/main/resources/application.properties`:
-```properties
-server.port=9091
-spring.datasource.url=jdbc:mysql://localhost:3306/skill_swap_db
-spring.datasource.username=root
-spring.datasource.password=YOUR_MYSQL_PASSWORD
-spring.jpa.hibernate.ddl-auto=update
-spring.jackson.serialization.write-dates-as-timestamps=false
-```
-
-Run the backend:
-```bash
-# Using Maven Wrapper (no Maven installation needed)
-./mvnw spring-boot:run       # Linux / Mac
+./mvnw spring-boot:run       # Linux/macOS
 .\mvnw.cmd spring-boot:run   # Windows
 ```
-> Backend starts at **http://localhost:9091**
 
-### 4️⃣ Frontend Setup
+The API is available at `http://localhost:9091`.
+
+### 4. Start the frontend
+
+In a second terminal:
+
 ```bash
 cd skill-swap-frontend
 npm install
 npm start
 ```
-> Frontend starts at **http://localhost:3000**
 
----
+The frontend is available at `http://localhost:3000`.
 
-## 📡 API Endpoints
+For a deployed backend, copy `.env.example` to `.env` and set:
 
-### Auth
+```env
+REACT_APP_API_URL=https://your-backend.example.com/api
+REACT_APP_WS_URL=https://your-backend.example.com/ws
+```
+
+## API overview
+
+### Authentication
+
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login (returns userId, username, role) |
+| --- | --- | --- |
+| `POST` | `/api/auth/register` | Register a user |
+| `POST` | `/api/auth/login` | Sign in |
 
-### Skills
+### Users and skills
+
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/skills/{userId}` | Get user's skills |
-| POST | `/api/skills` | Add a skill |
-| DELETE | `/api/skills/{id}` | Remove a skill |
+| --- | --- | --- |
+| `GET` | `/api/users/{id}` | Get a user profile |
+| `GET` | `/api/skills/user/{userId}` | List a user's skills |
+| `POST` | `/api/skills/add` | Add a teach or learn skill |
+| `GET` | `/api/search` | Search users by skill and type |
 
-### Search & Swaps
+### Skill swaps
+
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/search?skill=X&type=teach` | Find matching users |
-| POST | `/api/swaps/request` | Send swap request |
-| GET | `/api/swaps/incoming/{userId}` | Get incoming requests |
-| GET | `/api/swaps/outgoing/{userId}` | Get outgoing requests |
-| PUT | `/api/swaps/{id}/accept` | Accept a swap |
-| PUT | `/api/swaps/{id}/reject` | Reject a swap |
+| --- | --- | --- |
+| `POST` | `/api/swaps/request` | Create a swap request |
+| `GET` | `/api/swaps/pending/{userId}` | List incoming requests |
+| `GET` | `/api/swaps/sent/{userId}` | List outgoing requests |
+| `PATCH` | `/api/swaps/status/{swapId}?status={status}` | Update request status |
 
-### Chat (REST + WebSocket)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| WS | `ws://localhost:9091/ws` | STOMP WebSocket endpoint |
-| STOMP | `/app/chat.send` | Send a message |
-| STOMP | `/user/queue/messages` | Subscribe to incoming messages |
-| GET | `/api/chat/history/{userId1}/{userId2}` | Conversation history |
-| GET | `/api/chat/conversations/{userId}` | Inbox with unread counts |
-| GET | `/api/chat/unread/count/{userId}` | Unread message count |
-| POST | `/api/chat/read/{senderId}/{receiverId}` | Mark messages as read |
+### Chat
 
----
+| Protocol | Endpoint | Description |
+| --- | --- | --- |
+| `WS` | `/ws` | SockJS/STOMP connection endpoint |
+| `STOMP` | `/app/chat.send` | Send a chat message |
+| `STOMP` | `/user/queue/messages` | Receive user messages |
+| `GET` | `/api/chat/history/{userId1}/{userId2}` | Get conversation history |
+| `GET` | `/api/chat/contacts/{userId}` | List chat contacts |
+| `GET` | `/api/chat/conversations/{userId}` | List conversations |
+| `GET` | `/api/chat/unread/count/{userId}` | Get unread-message count |
+| `POST` | `/api/chat/read/{senderId}/{receiverId}` | Mark messages as read |
 
-## 🚀 Deployment
+## Deployment
 
-### ⚡ Recommended Stack (Free Tier)
+The repository includes a `render.yaml` configuration for deploying the Spring Boot backend to [Render](https://render.com). The production profile supports:
 
-```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   FRONTEND      │────▶│    BACKEND      │────▶│   DATABASE      │
-│                 │     │                 │     │                 │
-│   Vercel        │     │   Railway       │     │   Railway       │
-│   (React SPA)   │     │  (Spring Boot)  │     │   (MySQL 8)     │
-│   FREE ✅       │     │   FREE ✅       │     │   FREE ✅       │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-```
+- A dynamic `PORT` supplied by the hosting platform.
+- A configured external database through `SPRING_DATASOURCE_URL`.
+- H2 as a fallback database when no external database is configured.
+- CORS configuration through the `FRONTEND_URL` environment variable.
 
----
+For a production deployment:
 
-### 🌐 Frontend → Vercel (Best Choice ✅)
+1. Deploy the backend using the repository's `render.yaml` configuration.
+2. Set `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWORD` for a persistent database.
+3. Set `FRONTEND_URL` to the deployed frontend origin.
+4. Configure `REACT_APP_API_URL` and `REACT_APP_WS_URL` in the frontend hosting provider.
+5. Use `SPRING_JPA_HIBERNATE_DDL_AUTO=validate` after the production schema is established.
 
-Vercel is **perfect** for React SPAs — zero configuration, auto-deploy on push.
+## Roadmap
 
-1. Go to [vercel.com](https://vercel.com) → Import your GitHub repo
-2. Set **Root Directory** to `skill-swap-frontend`
-3. Add environment variable:
-   ```
-   REACT_APP_API_URL=https://your-railway-backend.up.railway.app/api
-   ```
-4. Deploy → get a `https://skill-swap-xxx.vercel.app` URL
+- Community profile discovery
+- Session scheduling
+- Video calls using WebRTC or Jitsi
+- Stronger production authentication and authorization
 
-Update `src/api/axios.js` before deploying:
-```js
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:9091/api',
-});
-```
-
-> ⚠️ **Why NOT Vercel for backend?** Vercel runs **serverless functions only** — no persistent JVM, no long-running processes, and **no WebSocket support**. Spring Boot needs a real server.
-
----
-
-### ☁️ Backend → Railway (Best Choice ✅)
-
-[Railway](https://railway.app) supports Java Spring Boot natively with WebSocket — **free \$5 credit/month**.
-
-1. Go to [railway.app](https://railway.app) → New Project → Deploy from GitHub
-2. Select `skill-swap-backend` as the root
-3. Add a **MySQL** database plugin in Railway
-4. Set environment variables:
-   ```
-   SPRING_DATASOURCE_URL=jdbc:mysql://your-railway-mysql-host:port/railway
-   SPRING_DATASOURCE_USERNAME=root
-   SPRING_DATASOURCE_PASSWORD=<railway-generated>
-   SERVER_PORT=8080
-   ```
-5. Railway auto-detects `pom.xml` and builds with Maven
-
----
-
-### 🔁 Alternative Deployment Options
-
-| Service | Frontend | Backend | Database | Free Tier |
-|---------|----------|---------|----------|-----------|
-| **Vercel** | ✅ Best | ❌ No Java/WS | ❌ | ✅ |
-| **Railway** | ✅ Good | ✅ Best | ✅ MySQL | ✅ \$5/mo |
-| **Render** | ✅ Good | ✅ Good | ✅ PostgreSQL | ✅ (sleeps) |
-| **Fly.io** | ✅ | ✅ | ✅ | ✅ 3 VMs |
-| **AWS (EB + RDS)** | ✅ S3+CF | ✅ | ✅ | ⚠️ 12 months |
-| **DigitalOcean** | ✅ | ✅ | ✅ | ❌ Paid |
-
----
-
-### 🔧 Production Checklist Before Deploying
-
-- [ ] Move `spring.datasource.password` to environment variables (never hardcode)
-- [ ] Update `WebConfig.java` CORS `allowedOrigins` to your Vercel frontend URL
-- [ ] Update `src/api/axios.js` baseURL to your Railway backend URL
-- [ ] Update `ChatWindow.js` SockJS URL to your Railway backend URL
-- [ ] Set `spring.jpa.hibernate.ddl-auto=validate` (not `update`) in production
-- [ ] Enable Spring Security properly (currently `permitAll` for development)
-
----
-
-## 🗺️ Feature Roadmap
-
-```
-✅ Feature 1 — Live Chat (WebSocket/STOMP)
-🔜 Feature 2 — Community Profiles (browse all users with profile cards)
-🔜 Feature 3 — Schedule Sessions (calendar-based time picking)
-🔜 Feature 4 — Secure Video Calls (WebRTC / Jitsi Meet)
-```
-
----
-
-## 👨‍💻 Author
+## Author
 
 **Naveen** — [@navi-siddu-1103](https://github.com/navi-siddu-1103)
 
----
-
 <div align="center">
-  <strong>Happy Swapping! 🔄</strong><br/>
-  <em>Connect · Learn · Grow</em>
+  <strong>Connect · Learn · Grow</strong>
 </div>
